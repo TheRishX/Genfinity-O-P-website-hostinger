@@ -1,0 +1,6 @@
+{
+  "name": "Genfinity O&P",
+  "description": "Production-quality, fully responsive website for Genfinity O&P, an orthotics and prosthetics clinic in Tarzana, CA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

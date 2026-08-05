@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-red: #AF2022;
+  --color-brand-red-dark: #8C191A;
+  --color-brand-red-light: #EBB6B7;
+  --color-brand-blue: #235F83;
+  --color-brand-blue-dark: #1A4762;
+  --color-brand-blue-light: #E9F1F6;
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
