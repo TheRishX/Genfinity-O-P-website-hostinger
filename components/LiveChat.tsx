@@ -77,7 +77,7 @@ export function LiveChat() {
 
             <div className="p-3 bg-white border-t border-slate-100 shrink-0">
               {sent ? (
-                <div className="text-sm text-center text-emerald-600 font-medium py-2">
+                <div className="text-sm text-center text-brand-blue font-medium py-2">
                   Message sent! We&apos;ll reply shortly.
                 </div>
               ) : (

@@ -103,7 +103,7 @@ export default function AboutPage() {
                 />
               </div>
               <div className="lg:col-span-3 p-10 lg:p-16 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-700 font-medium mb-6 w-fit">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue-light border border-brand-blue/20 text-brand-blue font-medium mb-6 w-fit">
                   <Award className="w-5 h-5" />
                   <span>BOC Certified Orthotist</span>
                 </div>

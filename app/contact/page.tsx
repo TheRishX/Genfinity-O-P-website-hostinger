@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ContactPage() {
   const fadeIn = {
@@ -120,25 +121,12 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="lg:col-span-7"
             >
-              <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-2 sm:p-4 overflow-hidden h-full min-h-[600px] flex flex-col">
-                <div className="text-center p-6 pb-2">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Request an Appointment or Inquiry</h3>
-                  <p className="text-sm text-slate-500">Please fill out the form below. We will get back to you shortly.</p>
-                </div>
-                {/* Embed Google Form */}
-                <div className="flex-1 w-full rounded-2xl overflow-hidden relative">
-                  {/* Note: This is a placeholder Google Form URL. In a real deployment, replace the src with the actual embedded Google Form URL. */}
-                  <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLSeQ_X9L1iX_L_1c3Z3d3A_wGg4q4n4d4E_w_w/viewform?embedded=true" 
-                    className="absolute inset-0 w-full h-full"
-                    frameBorder="0" 
-                    marginHeight={0} 
-                    marginWidth={0}
-                    title="Genfinity O&P Contact Form"
-                  >
-                    Loading...
-                  </iframe>
-                </div>
+              <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 sm:p-12 h-full flex flex-col justify-center">
+                <p className="text-sm font-bold tracking-[.18em] uppercase text-brand-red mb-4">Appointments &amp; questions</p>
+                <h3 className="text-3xl font-bold text-slate-900 mb-4">The fastest way to reach us is a quick call.</h3>
+                <p className="text-slate-600 leading-relaxed mb-8">Our consultation form checks the details you provide, then opens a ready-to-send message addressed to our clinic. You can also call us directly for immediate scheduling support.</p>
+                <a href="tel:8885526188" className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-red px-6 py-3.5 text-white font-bold mb-4"><Phone className="w-5 h-5" /> Call (888) 552-6188</a>
+                <Link href="/request-consultation" className="inline-flex items-center justify-center rounded-full border border-brand-blue px-6 py-3.5 text-brand-blue font-bold hover:bg-brand-blue-light">Request a consultation online</Link>
               </div>
             </motion.div>
 

@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-red: #AF2022;
-  --color-brand-red-dark: #8C191A;
-  --color-brand-red-light: #EBB6B7;
-  --color-brand-blue: #235F83;
-  --color-brand-blue-dark: #1A4762;
-  --color-brand-blue-light: #E9F1F6;
+  --color-brand-red: #AF201F;
+  --color-brand-red-dark: #AF201F;
+  --color-brand-red-light: #FFFFFF;
+  --color-brand-blue: #125A58;
+  --color-brand-blue-dark: #125A58;
+  --color-brand-blue-light: #FFFFFF;
+  --color-brand-ink: #020617;
+  --color-slate-900: #020617;
+  --color-slate-950: #020617;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-outfit);
 }
@@ -15,4 +18,37 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-tight;
   }
+  body { @apply pb-20 lg:pb-0; }
 }
+
+/* Route loading experience: six layered kinetic elements echo the precision and movement behind O&P care. */
+.genfinity-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #FFFFFF;
+  isolation: isolate;
+}
+
+.hero-grid { background-image: linear-gradient(rgba(18,90,88,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(18,90,88,.075) 1px,transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(90deg,transparent,black 20%,black 80%,transparent); }
+.genfinity-loader__mesh { position: absolute; inset: 0; opacity: .55; background-image: linear-gradient(rgba(18,90,88,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(18,90,88,.07) 1px,transparent 1px); background-size: 38px 38px; mask-image: radial-gradient(circle at center,black,transparent 72%); }
+.genfinity-loader__orb { position: absolute; width: 38vw; height: 38vw; min-width: 300px; min-height: 300px; border-radius: 999px; filter: blur(2px); opacity: .55; }
+.genfinity-loader__orb--one { top: -20vw; left: -12vw; background: radial-gradient(circle at 70% 70%,rgba(18,90,88,.22),transparent 68%); animation: loader-drift 10s ease-in-out infinite alternate; }
+.genfinity-loader__orb--two { right: -15vw; bottom: -25vw; background: radial-gradient(circle at 30% 30%,rgba(175,32,31,.16),transparent 68%); animation: loader-drift 12s ease-in-out -4s infinite alternate-reverse; }
+.genfinity-loader__orb--three { top: 18%; right: 15%; width: 12vw; height: 12vw; min-width: 130px; min-height: 130px; background: radial-gradient(circle,rgba(18,90,88,.16),transparent 70%); animation: loader-breathe 4s ease-in-out infinite; }
+.genfinity-loader__stage { position: absolute; width: min(64vw,560px); aspect-ratio: 1; transform-style: preserve-3d; perspective: 800px; animation: loader-stage 9s ease-in-out infinite; }
+.genfinity-loader__ring { position: absolute; inset: 10%; border: 1px solid rgba(18,90,88,.17); border-radius: 50%; transform-style: preserve-3d; }
+.genfinity-loader__ring--outer { transform: rotateX(67deg) rotateZ(18deg); border-color: rgba(18,90,88,.3); animation: loader-spin 7s linear infinite; }
+.genfinity-loader__ring--middle { inset: 23%; transform: rotateX(72deg) rotateY(35deg); border-color: rgba(175,32,31,.4); animation: loader-spin-reverse 5s linear infinite; }
+.genfinity-loader__ring--inner { inset: 36%; border-width: 2px; border-color: rgba(18,90,88,.35); animation: loader-pulse-ring 2.4s ease-in-out infinite; }
+.genfinity-loader__core { position:absolute; inset:43%; display:grid; place-items:center; transform-style:preserve-3d; animation: loader-core 3s ease-in-out infinite; }
+.genfinity-loader__core span { position:absolute; width:100%; height:100%; border:2px solid #125a58; border-radius:7px; background:rgba(255,255,255,.2); box-shadow:0 7px 16px rgba(18,90,88,.12); }
+.genfinity-loader__core span:nth-child(1){transform:rotateX(58deg) rotateZ(45deg)} .genfinity-loader__core span:nth-child(2){border-color:#af201f;transform:rotateY(58deg) rotateZ(45deg)} .genfinity-loader__core span:nth-child(3){transform:rotateZ(45deg)}
+.genfinity-loader__spark { position:absolute; display:block; width:10px; height:10px; border-radius:999px; background:#af201f; box-shadow:0 0 0 6px rgba(175,32,31,.09); }
+.genfinity-loader__spark--one { left:15%; top:35%; animation: loader-spark 2.7s ease-in-out infinite; }.genfinity-loader__spark--two { right:17%; top:59%; background:#125a58; box-shadow:0 0 0 6px rgba(18,90,88,.09); animation: loader-spark 2.7s .9s ease-in-out infinite; }.genfinity-loader__spark--three { left:47%; bottom:8%; animation: loader-spark 2.7s 1.7s ease-in-out infinite; }
+.genfinity-loader__content { position:relative; z-index:2; width:min(90vw,340px); margin-top:min(61vw,450px); text-align:center; animation: loader-content .7s ease-out both; }.genfinity-loader__logo-wrap { height:52px; display:grid; place-items:center; }.genfinity-loader__logo { max-height:52px; max-width:225px; object-fit:contain; }.genfinity-loader__eyebrow { margin-top:22px; color:#af201f; font-size:11px; font-weight:800; letter-spacing:.17em; text-transform:uppercase; }.genfinity-loader__message { margin:7px 0 17px; color:#020617; font-family:var(--font-outfit); font-size:20px; font-weight:700; }.genfinity-loader__progress { overflow:hidden; height:3px; border-radius:999px; background:rgba(18,90,88,.12); }.genfinity-loader__progress span { display:block; width:42%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#125a58,#af201f); animation: loader-progress 1.7s ease-in-out infinite; }
+@keyframes loader-spin {to{transform:rotateX(67deg) rotateZ(378deg)}} @keyframes loader-spin-reverse {to{transform:rotateX(72deg) rotateY(35deg) rotateZ(-325deg)}} @keyframes loader-pulse-ring {50%{opacity:.25;transform:scale(1.13)}} @keyframes loader-stage {50%{transform:translateY(-15px) rotateZ(2deg)}} @keyframes loader-core {50%{transform:rotateX(26deg) rotateY(26deg) scale(1.15)}} @keyframes loader-spark {50%{transform:scale(1.8);opacity:.25}} @keyframes loader-drift {to{transform:translate(7vw,5vw) scale(1.15)}} @keyframes loader-breathe {50%{transform:scale(1.28);opacity:.2}} @keyframes loader-progress {0%{transform:translateX(-120%)}100%{transform:translateX(330%)}} @keyframes loader-content {from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce) { .genfinity-loader *, .genfinity-loader { animation: none !important; } }

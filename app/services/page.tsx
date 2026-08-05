@@ -44,6 +44,35 @@ export default function ServicesPage() {
         "Post-Surgical Protective Devices"
       ],
       image: "https://images.unsplash.com/photo-1574484284002-952d92456975?auto=format&fit=crop&q=80&w=800&h=600"
+    },
+    {
+      id: "custom-insoles",
+      title: "Custom Foot Orthotics & Insoles",
+      icon: <Activity className="w-8 h-8" />,
+      color: "blue",
+      desc: "Custom-made insoles designed around your gait, footwear, foot shape, and comfort needs—whether you are seeking pressure relief, improved alignment, or greater endurance.",
+      items: [
+        "Plantar Fasciitis & Heel Pain Support",
+        "Flat Feet & Overpronation Support",
+        "Diabetic & Accommodative Insoles",
+        "Sports & Work Footwear Solutions",
+        "Gait Assessment & Pressure Relief"
+      ],
+      image: "https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&q=80&w=800&h=600"
+    },
+    {
+      id: "mobility-equipment",
+      title: "Mobility Equipment",
+      icon: <HeartPulse className="w-8 h-8" />,
+      color: "red",
+      desc: "Reliable durable medical equipment chosen to support safer, more independent movement at home and in the community.",
+      items: [
+        "Walkers & Crutches",
+        "Manual & Power Wheelchairs",
+        "Custom Wheelchair Seating",
+        "Standing Frames & Support Equipment"
+      ],
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800&h=600"
     }
   ];
 
@@ -91,14 +120,14 @@ export default function ServicesPage() {
                 <ul className="space-y-4 pt-4">
                   {service.items.map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-slate-700 font-medium">
-                      <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-6 h-6 text-brand-red shrink-0 mt-0.5" />
                       {item}
                     </li>
                   ))}
                 </ul>
                 <div className="pt-6">
                   <Link 
-                    href="/contact" 
+                    href={`/services/${service.id}`}
                     className={`inline-flex justify-center items-center gap-2 px-8 py-3.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 ${service.color === 'blue' ? 'bg-brand-blue hover:bg-brand-blue-dark text-white' : 'bg-brand-red hover:bg-brand-red-dark text-white'}`}
                   >
                     Schedule a Consultation
