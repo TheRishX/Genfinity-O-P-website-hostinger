@@ -34,6 +34,11 @@
 }
 
 .hero-grid { background-image: linear-gradient(rgba(18,90,88,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(18,90,88,.075) 1px,transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(90deg,transparent,black 20%,black 80%,transparent); }
+.hero-orbit { transform-origin:center; animation: hero-orbit 12s linear infinite; }
+.hero-orbit--two { animation-direction:reverse; animation-duration:17s; }
+.call-shine::after { content:""; position:absolute; inset:-55% auto -55% -35%; width:20%; background:rgba(255,255,255,.45); transform:rotate(18deg); animation:call-shine 5s ease-in-out infinite; }.location-pin { position:relative; display:grid; place-items:center; isolation:isolate; width:18px; height:20px; color:#FFFFFF; }.location-pin::after { content:""; position:absolute; z-index:-1; top:50%; left:50%; width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:#AF201F; box-shadow:0 0 0 11px rgba(175,32,31,.24),0 0 20px rgba(175,32,31,.9); animation:location-pulse 2.4s ease-out infinite; }
+@keyframes hero-orbit { to { transform:rotate(360deg); } } @keyframes call-shine { 0%,72% { transform:translateX(-270%) rotate(18deg); } 88%,100% { transform:translateX(800%) rotate(18deg); } } @keyframes location-pulse { 70% { box-shadow:0 0 0 22px rgba(175,32,31,0),0 0 28px rgba(175,32,31,0); } 100% { box-shadow:0 0 0 0 rgba(175,32,31,0),0 0 0 rgba(175,32,31,0); } }
+@media (prefers-reduced-motion: reduce) { .hero-orbit, .call-shine::after, .location-pin::after { animation: none !important; } }
 .genfinity-loader__mesh { position: absolute; inset: 0; opacity: .55; background-image: linear-gradient(rgba(18,90,88,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(18,90,88,.07) 1px,transparent 1px); background-size: 38px 38px; mask-image: radial-gradient(circle at center,black,transparent 72%); }
 .genfinity-loader__orb { position: absolute; width: 38vw; height: 38vw; min-width: 300px; min-height: 300px; border-radius: 999px; filter: blur(2px); opacity: .55; }
 .genfinity-loader__orb--one { top: -20vw; left: -12vw; background: radial-gradient(circle at 70% 70%,rgba(18,90,88,.22),transparent 68%); animation: loader-drift 10s ease-in-out infinite alternate; }

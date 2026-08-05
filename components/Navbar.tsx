@@ -47,8 +47,8 @@ export function Navbar() {
     >
       <div className="hidden sm:block bg-brand-blue text-white py-2 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <span className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" /> Tarzana, Los Angeles · Patient-first care</span>
-          <a className="font-semibold hover:text-white/80" href="tel:8885526188">Call now: (888) 552-6188</a>
+          <span className="flex items-center gap-2"><span className="location-pin"><MapPin className="relative z-10 w-4 h-4" /></span> Tarzana, Los Angeles · Patient-first care</span>
+          <a className="call-shine relative overflow-hidden rounded-full px-3 py-1 font-semibold hover:text-white/80" href="tel:8885526188">Call now: (888) 552-6188</a>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
