@@ -22,7 +22,7 @@ const services = [
     promise: "Feel supported—not restricted.",
     description:
       "Support shaped around your body, your movement, and the life you want to keep living.",
-    image: "/images/stock/orthotics-fitting-care.webp",
+    image: "/images/genfinity/orthotic-clinical-care.avif",
     href: "/services/orthotics",
     icon: ScanLine,
     options: ["Ankle-foot orthoses", "Knee & spinal support", "Pediatric care"],
@@ -33,7 +33,7 @@ const services = [
     promise: "Built for where life takes you.",
     description:
       "A personal path toward a comfortable fit, confident movement, and more freedom in your day.",
-    image: "/images/stock/prosthetic-city-walking.webp",
+    image: "/images/genfinity/prosthetic-lifestyle.avif",
     href: "/services/prosthetics",
     icon: Sparkles,
     options: [
@@ -48,7 +48,7 @@ const services = [
     promise: "Give every step better support.",
     description:
       "Personalized foot support designed to ease pressure, improve balance, and keep you moving.",
-    image: "/images/stock/custom-insoles-lifestyle.webp",
+    image: "/images/genfinity/orthotic-shoe-fitting.avif",
     href: "/services/custom-insoles",
     icon: HeartPulse,
     options: ["Heel-pain support", "Flat-foot support", "Diabetic insoles"],
@@ -105,7 +105,7 @@ export function MobileHome() {
           <div className="mobile-home__visual-ring" aria-hidden="true" />
           <div className="mobile-home__image-wrap">
             <SkeletonImage
-              src="/images/services/prosthetic-mobility.webp"
+              src="/images/genfinity/hero-mobility.webp"
               alt="A man with a prosthetic leg walking confidently beside a loved one"
               fill
               priority

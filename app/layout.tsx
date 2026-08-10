@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     siteName: "Genfinity O&P",
     images: [
       {
-        url: "/images/stock/prosthetic-community.webp",
-        width: 1400,
-        height: 933,
+        url: "/images/genfinity/prosthetic-community.avif",
+        width: 2528,
+        height: 1686,
         alt: "A person moving confidently with a prosthetic leg",
       },
     ],

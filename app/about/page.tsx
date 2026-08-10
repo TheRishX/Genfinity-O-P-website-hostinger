@@ -3,8 +3,8 @@
 import { motion } from "motion/react";
 import { Award, HeartHandshake, Microscope } from "lucide-react";
 import { SkeletonImage } from "@/components/SkeletonImage";
-const consultationImage = "/images/stock/orthosis-fabrication.webp";
-const orthoticsImage = "/images/services/orthotics-fitting.webp";
+const consultationImage = "/images/genfinity/orthotic-clinical-care.avif";
+const orthoticsImage = "/images/genfinity/prosthetic-community.avif";
 
 export default function AboutPage() {
   const fadeIn = {
@@ -111,44 +111,42 @@ export default function AboutPage() {
       {/* CLINICAL LEADERSHIP */}
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
-            <div className="grid lg:grid-cols-5">
-              <div className="lg:col-span-2 relative aspect-square lg:aspect-auto">
-                <SkeletonImage
-                  src={orthoticsImage}
-                  alt="A clinician carefully fitting a custom ankle-foot orthosis"
-                  fill
-                  className="object-cover"
-                  referrerPolicy="no-referrer"
-                />
+          <div className="grid items-center gap-16 lg:grid-cols-2">
+            <div className="relative aspect-square overflow-hidden rounded-3xl bg-slate-100 shadow-2xl">
+              <SkeletonImage
+                src={orthoticsImage}
+                alt="A person with a prosthetic leg enjoying time outdoors with a loved one"
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="flex flex-col justify-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue-light border border-brand-blue/20 text-brand-blue font-medium mb-6 w-fit">
+                <Award className="w-5 h-5" />
+                <span>BOC Certified Orthotist</span>
               </div>
-              <div className="lg:col-span-3 p-10 lg:p-16 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue-light border border-brand-blue/20 text-brand-blue font-medium mb-6 w-fit">
-                  <Award className="w-5 h-5" />
-                  <span>BOC Certified Orthotist</span>
-                </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
-                  Experience guided by empathy
-                </h3>
-                <p className="text-brand-blue font-semibold text-lg mb-8">
-                  Clinical leadership by Deepak Kumar Bhardwaj
-                </p>
+              <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                Experience guided by empathy
+              </h3>
+              <p className="text-brand-blue font-semibold text-lg mb-8">
+                Clinical leadership by Deepak Kumar Bhardwaj
+              </p>
 
-                <div className="space-y-6 text-slate-600 leading-relaxed text-lg">
-                  <p>
-                    With more than 25 years in orthotics and prosthetics, Deepak
-                    brings experienced clinical judgment to each evaluation,
-                    fitting, and adjustment. That experience is used for one
-                    purpose: solving the problem in front of the patient.
-                  </p>
-                  <p>
-                    His approach combines biomechanics, careful listening, and
-                    practical problem-solving. Whether the need is complex
-                    bracing, foot pain relief, prosthetic mobility, or
-                    day-to-day support, the conversation begins with what the
-                    patient wants to do more comfortably and confidently.
-                  </p>
-                </div>
+              <div className="space-y-6 text-slate-600 leading-relaxed text-lg">
+                <p>
+                  With more than 25 years in orthotics and prosthetics, Deepak
+                  brings experienced clinical judgment to each evaluation,
+                  fitting, and adjustment. That experience is used for one
+                  purpose: solving the problem in front of the patient.
+                </p>
+                <p>
+                  His approach combines biomechanics, careful listening, and
+                  practical problem-solving. Whether the need is complex
+                  bracing, foot pain relief, prosthetic mobility, or day-to-day
+                  support, the conversation begins with what the patient wants
+                  to do more comfortably and confidently.
+                </p>
               </div>
             </div>
           </div>

@@ -15,10 +15,10 @@ import {
 import { SkeletonImage } from "@/components/SkeletonImage";
 import { ServiceExploreCard } from "@/components/ServiceExploreCard";
 import { MobileHome } from "@/components/MobileHome";
-const heroImage = "/images/services/prosthetic-mobility.webp";
-const orthoticsImage = "/images/stock/orthotics-fitting-care.webp";
-const prostheticsCardImage = "/images/stock/prosthetic-city-walking.webp";
-const insolesImage = "/images/stock/custom-insoles-lifestyle.webp";
+const heroImage = "/images/genfinity/hero-mobility.webp";
+const orthoticsImage = "/images/genfinity/orthotic-clinical-care.avif";
+const prostheticsCardImage = "/images/genfinity/prosthetic-lifestyle.avif";
+const insolesImage = "/images/genfinity/orthotic-shoe-fitting.avif";
 
 const carePaths = [
   {

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight, CheckCircle2, HeartPulse, Activity } from "lucide-react";
 import { SkeletonImage } from "@/components/SkeletonImage";
-const orthoticsImage = "/images/stock/clinical-orthotic-fitting.webp";
-const prostheticsImage = "/images/stock/prosthetic-urban-life.webp";
-const insolesImage = "/images/stock/foot-assessment.webp";
+const orthoticsImage = "/images/genfinity/orthotic-clinical-care.avif";
+const prostheticsImage = "/images/genfinity/prosthetic-hiking.avif";
+const insolesImage = "/images/genfinity/orthotic-shoe-fitting.avif";
 
 export default function ServicesPage() {
   const fadeIn = {

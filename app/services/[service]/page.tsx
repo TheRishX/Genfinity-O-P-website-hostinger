@@ -7,9 +7,9 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-const orthoticsImage = "/images/stock/ankle-foot-orthosis-care.webp";
-const prostheticsImage = "/images/stock/prosthetic-walking-closeup.webp";
-const insolesImage = "/images/services/custom-insoles-assessment.webp";
+const orthoticsImage = "/images/genfinity/orthotic-clinical-care.avif";
+const prostheticsImage = "/images/genfinity/prosthetic-hiking.avif";
+const insolesImage = "/images/genfinity/orthotic-shoe-fitting.avif";
 
 const content = {
   orthotics: {
