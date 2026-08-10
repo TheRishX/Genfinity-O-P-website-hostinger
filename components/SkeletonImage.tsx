@@ -13,7 +13,7 @@ export function SkeletonImage({
   className = '', 
   alt = '', 
   src, 
-  fallbackSrc = 'https://picsum.photos/seed/healthcare/800/600',
+  fallbackSrc = '',
   ...props 
 }: SkeletonImageProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +30,7 @@ export function SkeletonImage({
         }`}
         onLoad={() => setIsLoading(false)}
         onError={() => {
-          if (imgSrc !== fallbackSrc) {
+          if (fallbackSrc && imgSrc !== fallbackSrc) {
             setImgSrc(fallbackSrc);
           } else {
             setIsLoading(false);

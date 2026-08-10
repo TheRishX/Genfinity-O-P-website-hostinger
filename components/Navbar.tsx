@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Phone, Menu, X, ChevronDown, MapPin } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Phone, Menu, X, ChevronDown, MapPin, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const NAV_LINKS = [
-  { name: 'Home', href: '/' },
-  { name: 'Services', href: '/services' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Patient Resources', href: '/patient-resources' },
-  { name: 'Contact', href: '/contact' },
+  { name: "Home", href: "/" },
+  { name: "Services", href: "/services" },
+  { name: "About Us", href: "/about" },
+  { name: "Patient Resources", href: "/patient-resources" },
+  { name: "Contact", href: "/contact" },
 ];
 
 const CARE_LINKS = [
-  { name: 'Custom Orthotics', href: '/services/orthotics' },
-  { name: 'Prosthetic Care', href: '/services/prosthetics' },
-  { name: 'Custom Foot Orthotics', href: '/services/custom-insoles' },
-  { name: 'Mobility Equipment', href: '/services/mobility-equipment' },
+  { name: "Custom Orthotics", href: "/services/orthotics" },
+  { name: "Prosthetic Care", href: "/services/prosthetics" },
+  { name: "Custom Foot Orthotics", href: "/services/custom-insoles" },
+  { name: "The Care Process", href: "/the-process" },
 ];
 
 export function Navbar() {
@@ -30,8 +30,8 @@ export function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close mobile menu on route change
@@ -39,23 +39,48 @@ export function Navbar() {
     setTimeout(() => setMobileMenuOpen(false), 0);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-slate-100' : 'bg-white border-transparent'
+        isScrolled
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-slate-100"
+          : "bg-white border-transparent"
       }`}
     >
-      <div className="hidden sm:block bg-brand-blue text-white py-2 text-xs">
+      <div className="hidden lg:block bg-brand-blue text-white py-2 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <span className="flex items-center gap-2"><span className="location-pin"><MapPin className="relative z-10 w-4 h-4" /></span> Tarzana, Los Angeles · Patient-first care</span>
-          <a className="call-shine relative overflow-hidden rounded-full px-3 py-1 font-semibold hover:text-white/80" href="tel:8885526188">Call now: (888) 552-6188</a>
+          <span className="flex items-center gap-2">
+            <span className="location-pin">
+              <MapPin className="relative z-10 w-4 h-4" />
+            </span>{" "}
+            Tarzana, Los Angeles · Patient-first care
+          </span>
+          <a
+            className="call-shine relative overflow-hidden rounded-full px-3 py-1 font-semibold hover:text-white/80"
+            href="tel:8885526188"
+          >
+            Call now: (888) 552-6188
+          </a>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <div className="hidden lg:block max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <img src="https://genfinityoandp.com/wp-content/uploads/2026/03/logo2.png" alt="Genfinity O&P" className="h-11 w-auto max-w-[190px] object-contain object-left" />
+            <img
+              src="/images/brand/genfinity-logo.webp"
+              alt="Genfinity O&P"
+              className="h-11 w-auto max-w-[190px] object-contain object-left"
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -66,7 +91,9 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     className={`text-sm font-medium transition-colors hover:text-brand-red ${
-                      pathname === link.href ? 'text-brand-red font-semibold' : 'text-slate-600'
+                      pathname === link.href
+                        ? "text-brand-red font-semibold"
+                        : "text-slate-600"
                     }`}
                   >
                     {link.name}
@@ -74,22 +101,45 @@ export function Navbar() {
                 </li>
               ))}
               <li className="relative group">
-                <button className="flex items-center gap-1 text-sm font-medium text-slate-600 group-hover:text-brand-red transition-colors">Care & Services <ChevronDown className="w-3.5 h-3.5" /></button>
+                <button className="flex items-center gap-1 text-sm font-medium text-slate-600 group-hover:text-brand-red transition-colors">
+                  Care & Services <ChevronDown className="w-3.5 h-3.5" />
+                </button>
                 <div className="absolute left-0 top-full pt-4 hidden group-hover:block">
                   <div className="w-72 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl shadow-slate-900/10">
-                    {CARE_LINKS.map((link) => <Link key={link.href} href={link.href} className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-brand-blue-light hover:text-brand-blue">{link.name}</Link>)}
-                    <Link href="/services" className="block rounded-xl px-4 py-3 text-sm font-semibold text-brand-red hover:bg-red-50">View all services →</Link>
+                    {CARE_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-brand-blue-light hover:text-brand-blue"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                    <Link
+                      href="/services"
+                      className="block rounded-xl px-4 py-3 text-sm font-semibold text-brand-red hover:bg-red-50"
+                    >
+                      View all services →
+                    </Link>
                   </div>
                 </div>
               </li>
               {NAV_LINKS.slice(2).map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className={`text-sm font-medium transition-colors hover:text-brand-red ${pathname === link.href ? 'text-brand-red font-semibold' : 'text-slate-600'}`}>{link.name}</Link>
+                  <Link
+                    href={link.href}
+                    className={`text-sm font-medium transition-colors hover:text-brand-red ${pathname === link.href ? "text-brand-red font-semibold" : "text-slate-600"}`}
+                  >
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
             <div className="flex items-center gap-4 border-l border-slate-200 pl-8">
-              <a href="tel:8885526188" className="hidden xl:flex items-center gap-2 text-sm font-semibold text-brand-blue hover:text-brand-blue-dark transition-colors">
+              <a
+                href="tel:8885526188"
+                className="hidden xl:flex items-center gap-2 text-sm font-semibold text-brand-blue hover:text-brand-blue-dark transition-colors"
+              >
                 <Phone className="w-4 h-4" />
                 (888) 552-6188
               </a>
@@ -108,7 +158,47 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Purpose-built mobile navigation */}
+      <div className="mobile-nav lg:hidden">
+        <Link
+          href="/"
+          className="mobile-nav__brand"
+          aria-label="Genfinity O&P home"
+        >
+          <img
+            src="/images/brand/genfinity-logo.webp"
+            alt="Genfinity O&P"
+            className="h-10 w-auto max-w-[168px] object-contain object-left"
+          />
+        </Link>
+        <div className="mobile-nav__actions">
+          <a
+            href="tel:8885526188"
+            className="mobile-nav__call"
+            aria-label="Call Genfinity O&P"
+          >
+            <Phone className="h-4 w-4" />
+          </a>
+          <button
+            className="mobile-nav__toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -116,49 +206,60 @@ export function Navbar() {
       {/* Mobile Nav */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="lg:hidden border-t border-slate-100 bg-white overflow-hidden"
-          >
-            <div className="px-4 py-6 space-y-4">
-              <ul className="flex flex-col gap-4">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className={`block text-lg font-medium transition-colors ${
-                        pathname === link.href ? 'text-brand-red' : 'text-slate-700'
-                      }`}
-                    >
+          <>
+            <motion.button
+              aria-label="Close menu"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="mobile-menu__backdrop lg:hidden"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              className="mobile-menu lg:hidden"
+            >
+              <div className="mobile-menu__heading">
+                <span>Explore Genfinity</span>
+                <strong>How can we help?</strong>
+              </div>
+              <nav aria-label="Mobile navigation">
+                <ul className="mobile-menu__primary">
+                  {NAV_LINKS.map((link, index) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className={pathname === link.href ? "is-active" : ""}
+                      >
+                        <span>0{index + 1}</span>
+                        {link.name}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mobile-menu__label">Care &amp; services</p>
+                <div className="mobile-menu__care">
+                  {CARE_LINKS.map((link) => (
+                    <Link href={link.href} key={link.href}>
                       {link.name}
                     </Link>
-                  </li>
-                ))}
-                <li className="pt-2 text-xs uppercase tracking-widest font-bold text-slate-400">Care &amp; services</li>
-                {CARE_LINKS.map((link) => <li key={link.href}><Link href={link.href} className="block text-base font-medium text-slate-700">{link.name}</Link></li>)}
-                <li><Link href="/what-to-expect" className="block text-base font-medium text-slate-700">What to Expect</Link></li>
-                <li><Link href="/insurance" className="block text-base font-medium text-slate-700">Insurance &amp; Billing</Link></li>
-              </ul>
-              <div className="pt-6 border-t border-slate-100 flex flex-col gap-4">
-                <a
-                  href="tel:8885526188"
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-brand-blue-light text-brand-blue font-semibold"
-                >
-                  <Phone className="w-5 h-5" />
-                  (888) 552-6188
+                  ))}
+                  <Link href="/what-to-expect">What to Expect</Link>
+                  <Link href="/insurance">Insurance &amp; Billing</Link>
+                </div>
+              </nav>
+              <div className="mobile-menu__contact">
+                <a href="tel:8885526188">
+                  <Phone className="h-4 w-4" /> (888) 552-6188
                 </a>
-                <Link
-                  href="/contact"
-                  className="flex items-center justify-center w-full py-3 rounded-xl bg-brand-red text-white font-semibold"
-                >
-                  Book an Appointment
-                </Link>
+                <Link href="/contact">Book Appointment</Link>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
