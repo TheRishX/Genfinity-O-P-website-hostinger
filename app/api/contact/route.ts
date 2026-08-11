@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import { isBrevoConfigured, sendBrevoEmail } from "@/lib/email/brevo";
 
 export const runtime = "nodejs";
 
@@ -20,10 +20,8 @@ function escapeHtml(value: string) {
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
-
-    if (!apiKey) {
-      console.error("Contact form is missing RESEND_API_KEY.");
+    if (!isBrevoConfigured()) {
+      console.error("Contact form email delivery is not configured.");
       return NextResponse.json(
         {
           error: "The contact form is temporarily unavailable. Please call us.",
@@ -54,16 +52,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const resend = new Resend(apiKey);
     const recipient =
       process.env.CONTACT_TO_EMAIL || "support@genfinityoandp.com";
-    const sender =
-      process.env.CONTACT_FROM_EMAIL ||
-      "Genfinity Website <website@genfinityoandp.com>";
     const fullName = `${first} ${last}`;
 
-    const { error } = await resend.emails.send({
-      from: sender,
+    await sendBrevoEmail({
       to: recipient,
       replyTo: email,
       subject: `New consultation request from ${fullName}`,
@@ -94,14 +87,6 @@ export async function POST(request: Request) {
         </div>
       `,
     });
-
-    if (error) {
-      console.error("Resend contact-form error:", error);
-      return NextResponse.json(
-        { error: "We could not send your request. Please call us instead." },
-        { status: 502 },
-      );
-    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

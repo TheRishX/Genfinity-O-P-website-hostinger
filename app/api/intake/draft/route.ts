@@ -95,7 +95,6 @@ export async function PUT(request: NextRequest) {
         iv: encrypted.iv,
         auth_tag: encrypted.tag,
         current_step: currentStep,
-        synthetic: Boolean(body.data.synthetic),
         updated_at: new Date().toISOString(),
         expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
       })
@@ -117,7 +116,6 @@ export async function PUT(request: NextRequest) {
       iv: encrypted.iv,
       auth_tag: encrypted.tag,
       current_step: currentStep,
-      synthetic: Boolean(body.data.synthetic),
     })
     .select("id")
     .single();

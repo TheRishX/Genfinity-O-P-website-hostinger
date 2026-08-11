@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import { sendBrevoEmail } from "@/lib/email/brevo";
 import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
 import {
   blindToken,
@@ -24,21 +24,15 @@ function referenceNumber() {
 }
 
 async function sendReceipts(reference: string, patientEmail: string) {
-  if (process.env.INTAKE_SEND_EMAILS !== "true" || !process.env.RESEND_API_KEY)
-    return;
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  const from =
-    process.env.CONTACT_FROM_EMAIL ||
-    "Genfinity Website <website@genfinityoandp.com>";
+  if (process.env.INTAKE_SEND_EMAILS !== "true") return;
+  const portalUrl = `${process.env.APP_URL || "https://genfinityoandp.com"}/staff/intakes`;
   await Promise.allSettled([
-    resend.emails.send({
-      from,
+    sendBrevoEmail({
       to: process.env.CONTACT_TO_EMAIL || "support@genfinityoandp.com",
       subject: `New patient intake received - ${reference}`,
-      text: `A new intake was received. Reference: ${reference}. Sign in to the secure Genfinity owner portal to review it. No patient information is included in this email.`,
+      text: `A new intake was received. Reference: ${reference}. Sign in to the secure Genfinity owner portal to review it: ${portalUrl}. No patient information is included in this email.`,
     }),
-    resend.emails.send({
-      from,
+    sendBrevoEmail({
       to: patientEmail,
       subject: `Genfinity O&P intake confirmation - ${reference}`,
       text: `Your Genfinity O&P intake was received on ${new Date().toLocaleDateString("en-US")}. Reference: ${reference}. Please keep this reference. For questions, call (888) 552-6188. This email does not contain your intake answers.`,
@@ -162,7 +156,6 @@ export async function POST(request: NextRequest) {
         ciphertext: profile.ciphertext,
         iv: profile.iv,
         auth_tag: profile.tag,
-        synthetic: intake.synthetic,
       })
       .select("id")
       .single();

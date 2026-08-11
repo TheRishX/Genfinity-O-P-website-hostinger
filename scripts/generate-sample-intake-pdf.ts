@@ -4,7 +4,6 @@ import { defaultIntakeData } from "../lib/intake/schema";
 
 async function main() {
   const data = structuredClone(defaultIntakeData);
-  data.synthetic = true;
   Object.assign(data.demographics, {
     legalName: "TEST Jordan Rivera",
     preferredName: "Jordan",

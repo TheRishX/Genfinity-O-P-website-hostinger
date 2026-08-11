@@ -43,7 +43,6 @@ const oldestDob = new Date();
 oldestDob.setFullYear(oldestDob.getFullYear() - 120);
 
 const intakeObject = z.object({
-  synthetic: z.boolean().default(false),
   demographics: z.object({
     legalName: requiredText("Legal name", 160),
     preferredName: text(100),
@@ -234,7 +233,6 @@ export const intakeSchema = intakeObject.superRefine((value, ctx) => {
 export type IntakeData = z.infer<typeof intakeSchema>;
 
 export const defaultIntakeData: IntakeData = {
-  synthetic: false,
   demographics: {
     legalName: "",
     preferredName: "",

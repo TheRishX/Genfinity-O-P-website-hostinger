@@ -1,16 +1,16 @@
 # Genfinity Patient Intake Setup
 
-The intake is intentionally locked to synthetic test data until the live compliance prerequisites are complete.
+The intake accepts real patients only. Submission and draft storage stay locked until all secure live-environment prerequisites are configured.
 
-## 1. Supabase staging
+## 1. Supabase project
 
-1. Create a Supabase project and copy `.env.example` to the host's secret configuration.
-2. Run `supabase/migrations/202608110001_patient_intake.sql` in the SQL editor or with the Supabase CLI.
+1. Use project `xpeyatekdkwlfaoflczl` and copy `.env.example` to the host's secret configuration.
+2. The intake schema and hardening migrations have been applied. Keep both files in `supabase/migrations` as the source-controlled schema history.
 3. Create the owner in Supabase Authentication.
 4. Add that Auth user's UUID to `public.staff_profiles` with role `owner`.
 5. Add two independently generated 32-byte base64 keys for encryption and blind search.
-6. Keep `PATIENT_INTAKE_MODE=staging`, `SUPABASE_HIPAA_READY=false`, and `INTAKE_SEND_EMAILS=false`.
-7. Test only with synthetic records whose legal names begin with `TEST`.
+6. Add a server-only Supabase secret key as `SUPABASE_SECRET_KEY`.
+7. Keep `SUPABASE_HIPAA_READY=false` and `INTAKE_SEND_EMAILS=false` until compliance and security acceptance are complete.
 
 ## 2. Owner access
 
@@ -25,6 +25,6 @@ Before using any real patient data:
 - Obtain counsel-approved consent language and the official Notice of Privacy Practices; publish it and set `NPP_VERSION` and `NEXT_PUBLIC_NPP_URL`.
 - Review the email provider and notification configuration. Intake emails must contain reference numbers only.
 - Complete security, RLS, MFA, PDF, recovery, and incident-response testing.
-- Set `SUPABASE_HIPAA_READY=true`, then set both intake mode variables to `live`.
+- Set `PATIENT_INTAKE_MODE=live` and `SUPABASE_HIPAA_READY=true` only after the requirements above are complete.
 
 The application refuses live submissions if the server-side compliance flag, encryption/search keys, NPP version, or owner email is missing.

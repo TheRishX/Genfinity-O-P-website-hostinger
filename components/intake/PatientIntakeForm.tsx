@@ -491,7 +491,6 @@ export function PatientIntakeForm() {
         },
         body: JSON.stringify({
           ...data,
-          synthetic: false,
           website,
         }),
       });
