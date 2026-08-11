@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+        <div className="mb-16 hidden grid-cols-1 gap-12 md:grid-cols-2 lg:grid lg:grid-cols-[1.05fr_1.55fr_1.1fr_1.2fr] lg:gap-10">
           {/* Brand & Intro */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center gap-2">
@@ -75,7 +75,7 @@ export function Footer() {
             <h3 className="text-white font-heading font-semibold text-lg mb-6">
               Quick Links
             </h3>
-            <ul className="space-y-4">
+            <ul className="grid grid-cols-2 gap-x-7 gap-y-4">
               {[
                 ["Home", "/"],
                 ["Services", "/services"],
@@ -92,7 +92,7 @@ export function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm hover:text-brand-red transition-colors flex items-center gap-2 group"
+                    className="group flex items-center gap-2 whitespace-nowrap text-sm transition-colors hover:text-brand-red"
                   >
                     <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-brand-red transition-colors" />
                     {item}
@@ -144,11 +144,11 @@ export function Footer() {
             </h3>
             <ul className="space-y-4">
               <li className="flex justify-between text-sm border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Monday - Friday</span>
-                <span className="text-white">Call to schedule</span>
+                <span className="text-slate-400">Monday–Friday</span>
+                <span className="text-white">10:00 am to 6:00 pm</span>
               </li>
               <li className="flex justify-between text-sm border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Saturday</span>
+                <span className="text-slate-400">Saturday–Sunday</span>
                 <span className="text-white">By appointment</span>
               </li>
               <li className="flex justify-between text-sm">

@@ -53,7 +53,5 @@ export async function requireOwner() {
     user.email?.toLowerCase() !== process.env.OWNER_EMAIL?.toLowerCase()
   )
     return null;
-  const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (!data || data.currentLevel !== "aal2") return null;
   return user;
 }

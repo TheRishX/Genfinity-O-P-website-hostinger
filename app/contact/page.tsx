@@ -123,16 +123,12 @@ export default function ContactPage() {
                 </h4>
                 <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span className="font-medium">Call to schedule</span>
+                    <span>Monday–Friday</span>
+                    <span className="font-medium">10:00 am to 6:00 pm</span>
                   </li>
                   <li className="flex justify-between">
-                    <span>Saturday</span>
-                    <span className="font-medium">By Appointment</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Sunday</span>
-                    <span className="font-medium">By Appointment</span>
+                    <span>Saturday–Sunday</span>
+                    <span className="font-medium">By appointment</span>
                   </li>
                 </ul>
               </div>

@@ -3,7 +3,6 @@ import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { LiveChat } from "@/components/LiveChat";
 import { MobileCallBar } from "@/components/MobileCallBar";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -60,7 +59,6 @@ export default function RootLayout({
         <Navbar />
         <main className="min-h-screen pt-20">{children}</main>
         <Footer />
-        <LiveChat />
         <MobileCallBar />
       </body>
     </html>

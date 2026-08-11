@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { KeyRound, LockKeyhole, ShieldCheck } from "lucide-react";
+import { KeyRound, LockKeyhole } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 
@@ -9,50 +9,23 @@ export function StaffLogin({ configured }: { configured: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState(process.env.NEXT_PUBLIC_OWNER_EMAIL || "");
   const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
-  const [factorId, setFactorId] = useState("");
-  const [challengeId, setChallengeId] = useState("");
-  const [qr, setQr] = useState("");
-  const [stage, setStage] = useState<"password" | "mfa">("password");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-
-  async function prepareMfa() {
-    const supabase = createBrowserSupabase();
-    const factors = await supabase.auth.mfa.listFactors();
-    const verified = factors.data?.totp.find(
-      (factor) => factor.status === "verified",
-    );
-    let id = verified?.id;
-    if (!id) {
-      const enrolled = await supabase.auth.mfa.enroll({
-        factorType: "totp",
-        friendlyName: "Genfinity owner portal",
-      });
-      if (enrolled.error || !enrolled.data)
-        throw enrolled.error || new Error("Unable to enroll MFA");
-      id = enrolled.data.id;
-      setQr(enrolled.data.totp.qr_code);
-    }
-    const challenge = await supabase.auth.mfa.challenge({ factorId: id });
-    if (challenge.error || !challenge.data)
-      throw challenge.error || new Error("Unable to start MFA");
-    setFactorId(id);
-    setChallengeId(challenge.data.id);
-    setStage("mfa");
-  }
+  const [notice, setNotice] = useState("");
 
   async function signIn(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError("");
+    setNotice("");
     try {
       const result = await createBrowserSupabase().auth.signInWithPassword({
         email,
         password,
       });
       if (result.error) throw result.error;
-      await prepareMfa();
+      router.push("/staff/intakes");
+      router.refresh();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Unable to sign in");
     } finally {
@@ -60,22 +33,26 @@ export function StaffLogin({ configured }: { configured: boolean }) {
     }
   }
 
-  async function verify(event: FormEvent) {
-    event.preventDefault();
+  async function sendPasswordReset() {
     setBusy(true);
     setError("");
+    setNotice("");
     try {
-      const result = await createBrowserSupabase().auth.mfa.verify({
-        factorId,
-        challengeId,
-        code,
+      const response = await fetch("/api/staff/password-reset/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-      if (result.error) throw result.error;
-      router.push("/staff/intakes");
-      router.refresh();
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to send the password setup link");
+      setNotice(
+        result.message || "A secure password setup link has been sent to the owner email.",
+      );
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "Invalid authenticator code",
+        error instanceof Error
+          ? error.message
+          : "Unable to send the password setup link",
       );
     } finally {
       setBusy(false);
@@ -105,11 +82,10 @@ export function StaffLogin({ configured }: { configured: boolean }) {
         Genfinity owner portal
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-slate-600">
-        Individual authentication and an authenticator code are required before
-        patient records can be viewed.
+        Sign in with the authorized owner email and password to review patient
+        intake records.
       </p>
-      {stage === "password" ? (
-        <form onSubmit={signIn} className="mt-8 space-y-5">
+      <form onSubmit={signIn} className="mt-8 space-y-5">
           <label className="block text-sm font-semibold text-brand-ink">
             Owner email
             <input
@@ -137,50 +113,29 @@ export function StaffLogin({ configured }: { configured: boolean }) {
             <KeyRound className="h-4 w-4" />
             {busy ? "Signing in…" : "Continue securely"}
           </button>
-        </form>
-      ) : (
-        <form onSubmit={verify} className="mt-8 space-y-5">
-          {qr && (
-            <div className="rounded-2xl bg-slate-50 p-5 text-center">
-              <p className="mb-4 text-sm font-semibold text-brand-ink">
-                Scan once with your authenticator app
-              </p>
-              {/* Authenticator enrollment is supplied as a one-time data URI. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={qr}
-                alt="Authenticator enrollment QR code"
-                className="mx-auto h-44 w-44"
-              />
-            </div>
-          )}
-          <label className="block text-sm font-semibold text-brand-ink">
-            Six-digit authenticator code
-            <input
-              required
-              inputMode="numeric"
-              pattern="[0-9]{6}"
-              maxLength={6}
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3.5 text-center font-mono text-xl tracking-[.3em] outline-none focus:border-brand-red"
-            />
-          </label>
           <button
-            disabled={busy}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white disabled:opacity-60"
+            type="button"
+            disabled={busy || !email}
+            onClick={sendPasswordReset}
+            className="w-full text-center text-sm font-semibold text-brand-red underline-offset-4 hover:underline disabled:opacity-50"
           >
-            <ShieldCheck className="h-4 w-4" />
-            {busy ? "Verifying…" : "Verify & open portal"}
+            Set or reset owner password
           </button>
-        </form>
-      )}
+      </form>
       {error && (
         <p
           role="alert"
           className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-semibold text-brand-red"
         >
           {error}
+        </p>
+      )}
+      {notice && (
+        <p
+          role="status"
+          className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-900"
+        >
+          {notice}
         </p>
       )}
     </div>

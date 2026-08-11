@@ -14,7 +14,7 @@ The intake accepts real patients only. Submission and draft storage stay locked 
 
 ## 2. Owner access
 
-Set `OWNER_EMAIL` and `NEXT_PUBLIC_OWNER_EMAIL` to the single owner account. The first sign-in enrolls a TOTP authenticator. Database policies require the resulting `aal2` session.
+Set `OWNER_EMAIL` and `NEXT_PUBLIC_OWNER_EMAIL` to the single owner account. The portal accepts only that authenticated email address.
 
 ## 3. Live prerequisites
 
@@ -24,7 +24,7 @@ Before using any real patient data:
 - Enable PITR/backups, SSL enforcement, network restrictions, and the controls required by Supabase's current HIPAA guidance.
 - Obtain counsel-approved consent language and the official Notice of Privacy Practices; publish it and set `NPP_VERSION` and `NEXT_PUBLIC_NPP_URL`.
 - Review the email provider and notification configuration. Intake emails must contain reference numbers only.
-- Complete security, RLS, MFA, PDF, recovery, and incident-response testing.
+- Complete security, RLS, PDF, account-recovery, and incident-response testing.
 - Set `PATIENT_INTAKE_MODE=live` and `SUPABASE_HIPAA_READY=true` only after the requirements above are complete.
 
 The application refuses live submissions if the server-side compliance flag, encryption/search keys, NPP version, or owner email is missing.

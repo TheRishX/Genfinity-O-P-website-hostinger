@@ -60,9 +60,9 @@ export default function Locations() {
               <div className="flex gap-4">
                 <Clock className="w-5 shrink-0 text-red-300" />
                 <span>
-                  Weekday appointments
+                  Monday–Friday: 10:00 am to 6:00 pm
                   <br />
-                  Weekend visits may be available by appointment
+                  Saturday–Sunday: By appointment
                 </span>
               </div>
             </div>

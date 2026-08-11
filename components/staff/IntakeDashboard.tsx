@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  AlertCircle,
   Download,
   FileClock,
   FileText,
@@ -52,6 +53,7 @@ export function IntakeDashboard() {
   const [selected, setSelected] = useState<string>("");
   const [detail, setDetail] = useState<Detail>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [office, setOffice] = useState<Record<string, boolean>>({});
@@ -69,14 +71,35 @@ export function IntakeDashboard() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const response = await fetch(
-      `/api/staff/intakes?q=${encodeURIComponent(query)}&status=${encodeURIComponent(status)}`,
-      { cache: "no-store" },
-    );
-    if (response.status === 401) return router.push("/staff/login");
-    const result = await response.json();
-    setRecords(result.records || []);
-    setLoading(false);
+    setLoadError("");
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 15_000);
+    try {
+      const response = await fetch(
+        `/api/staff/intakes?q=${encodeURIComponent(query)}&status=${encodeURIComponent(status)}`,
+        { cache: "no-store", signal: controller.signal },
+      );
+      if (response.status === 401) {
+        router.replace("/staff/login");
+        return;
+      }
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.error || "Unable to load patient intakes");
+      setRecords(Array.isArray(result.records) ? result.records : []);
+    } catch (error) {
+      setRecords([]);
+      setLoadError(
+        error instanceof DOMException && error.name === "AbortError"
+          ? "The request took too long. Please try again."
+          : error instanceof Error
+            ? error.message
+            : "Unable to load patient intakes",
+      );
+    } finally {
+      window.clearTimeout(timeout);
+      setLoading(false);
+    }
   }, [query, router, status]);
 
   useEffect(() => {
@@ -148,7 +171,7 @@ export function IntakeDashboard() {
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-800">
           <ShieldCheck className="h-4 w-4" />
-          MFA-protected session
+          Authorized owner session
         </div>
       </div>
       <div className="grid gap-6 xl:grid-cols-[390px_minmax(0,1fr)]">
@@ -178,6 +201,23 @@ export function IntakeDashboard() {
           <div className="max-h-[72vh] overflow-y-auto p-2">
             {loading ? (
               <Loader2 className="mx-auto my-10 h-6 w-6 animate-spin text-brand-red" />
+            ) : loadError ? (
+              <div className="px-5 py-10 text-center">
+                <AlertCircle className="mx-auto h-7 w-7 text-brand-red" />
+                <p className="mt-3 text-sm font-semibold text-brand-ink">
+                  Couldn&apos;t load intakes
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                  {loadError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => load()}
+                  className="mt-4 rounded-full bg-brand-red px-4 py-2 text-xs font-bold text-white"
+                >
+                  Try again
+                </button>
+              </div>
             ) : records.length ? (
               records.map((record) => (
                 <button
@@ -208,7 +248,9 @@ export function IntakeDashboard() {
               ))
             ) : (
               <p className="px-5 py-12 text-center text-sm text-slate-500">
-                No matching intakes.
+                {query || status
+                  ? "No matching intakes."
+                  : "No patient intakes have been submitted yet."}
               </p>
             )}
           </div>

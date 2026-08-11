@@ -331,6 +331,30 @@ export type Database = {
           },
         ]
       }
+      owner_password_resets: {
+        Row: {
+          created_at: string
+          expires_at: string
+          token_hash: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          token_hash: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          token_hash?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       patients: {
         Row: {
           auth_tag: string
@@ -514,4 +538,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
