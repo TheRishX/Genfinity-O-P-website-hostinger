@@ -9,12 +9,13 @@ import {
 } from "@/lib/intake/crypto";
 import type { IntakeData } from "@/lib/intake/schema";
 import { requireOwner, requireSameOrigin } from "@/lib/intake/security";
+import { createServerSupabase } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 async function loadRecord(id: string) {
-  const admin = createAdminClient();
-  const { data: intake } = await admin
+  const supabase = await createServerSupabase();
+  const { data: intake } = await supabase
     .from("intakes")
     .select("*")
     .eq("id", id)
@@ -27,24 +28,28 @@ async function loadRecord(id: string) {
     { data: audits },
     { data: amendments },
   ] = await Promise.all([
-    admin.from("patients").select("*").eq("id", intake.patient_id).single(),
-    admin
+    supabase
+      .from("patients")
+      .select("*")
+      .eq("id", intake.patient_id)
+      .single(),
+    supabase
       .from("office_checklists")
       .select("*")
       .eq("intake_id", id)
       .maybeSingle(),
-    admin
+    supabase
       .from("consent_records")
       .select(
         "consent_type,packet_version,text_hash,accepted_at,signer_relationship,signature_mode",
       )
       .eq("intake_id", id),
-    admin
+    supabase
       .from("intake_audit_events")
       .select("action,changed_fields,created_at")
       .eq("intake_id", id)
       .order("created_at", { ascending: false }),
-    admin
+    supabase
       .from("intake_amendments")
       .select("id,reason,changed_fields,created_at,ciphertext,iv,auth_tag")
       .eq("intake_id", id)

@@ -45,6 +45,24 @@ const checklistOptions = [
   "Claim submitted",
 ];
 
+async function readApiResponse(response: Response) {
+  const body = await response.text();
+  if (!body.trim()) {
+    throw new Error(
+      response.ok
+        ? "The server returned an empty response. Please try again."
+        : `The server could not complete the request (${response.status}).`,
+    );
+  }
+  try {
+    return JSON.parse(body);
+  } catch {
+    throw new Error(
+      `The server returned an invalid response (${response.status}). Please try again.`,
+    );
+  }
+}
+
 export function IntakeDashboard() {
   const router = useRouter();
   const [records, setRecords] = useState<Summary[]>([]);
@@ -83,7 +101,7 @@ export function IntakeDashboard() {
         router.replace("/staff/login");
         return;
       }
-      const result = await response.json();
+      const result = await readApiResponse(response);
       if (!response.ok)
         throw new Error(result.error || "Unable to load patient intakes");
       setRecords(Array.isArray(result.records) ? result.records : []);
@@ -115,7 +133,7 @@ export function IntakeDashboard() {
       cache: "no-store",
     });
     if (response.status === 401) return router.push("/staff/login");
-    const result = await response.json();
+    const result = await readApiResponse(response);
     setDetail(result);
     setOffice(result.checklist?.checklist || {});
     setNotes(result.checklist?.clinician_notes || "");
@@ -141,7 +159,7 @@ export function IntakeDashboard() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    const result = await response.json();
+    const result = await readApiResponse(response);
     setMessage(
       response.ok
         ? "Changes saved with an audit entry."
