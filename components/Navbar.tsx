@@ -21,6 +21,12 @@ const CARE_LINKS = [
   { name: "The Care Process", href: "/the-process" },
 ];
 
+const CONTACT_LINKS = [
+  { name: "Contact Us", href: "/contact" },
+  { name: "Request Consultation", href: "/request-consultation" },
+  { name: "New Patient Intake", href: "/patient-intake" },
+];
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -124,7 +130,7 @@ export function Navbar() {
                   </div>
                 </div>
               </li>
-              {NAV_LINKS.slice(2).map((link) => (
+              {NAV_LINKS.slice(2, -1).map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -134,6 +140,26 @@ export function Navbar() {
                   </Link>
                 </li>
               ))}
+              <li className="relative group">
+                <button
+                  className={`flex items-center gap-1 text-sm font-medium transition-colors group-hover:text-brand-red ${pathname === "/contact" || pathname === "/request-consultation" || pathname === "/patient-intake" ? "font-semibold text-brand-red" : "text-slate-600"}`}
+                >
+                  Contact <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+                <div className="absolute right-0 top-full pt-4 hidden group-hover:block">
+                  <div className="w-64 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl shadow-slate-900/10">
+                    {CONTACT_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-brand-red"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </li>
             </ul>
             <div className="flex items-center gap-4 border-l border-slate-200 pl-8">
               <a
@@ -228,18 +254,20 @@ export function Navbar() {
               </div>
               <nav aria-label="Mobile navigation">
                 <ul className="mobile-menu__primary">
-                  {NAV_LINKS.map((link, index) => (
-                    <li key={link.name}>
-                      <Link
-                        href={link.href}
-                        className={pathname === link.href ? "is-active" : ""}
-                      >
-                        <span>0{index + 1}</span>
-                        {link.name}
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </li>
-                  ))}
+                  {NAV_LINKS.filter((link) => link.name !== "Contact").map(
+                    (link, index) => (
+                      <li key={link.name}>
+                        <Link
+                          href={link.href}
+                          className={pathname === link.href ? "is-active" : ""}
+                        >
+                          <span>0{index + 1}</span>
+                          {link.name}
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </li>
+                    ),
+                  )}
                 </ul>
                 <p className="mobile-menu__label">Care &amp; services</p>
                 <div className="mobile-menu__care">
@@ -250,6 +278,14 @@ export function Navbar() {
                   ))}
                   <Link href="/what-to-expect">What to Expect</Link>
                   <Link href="/insurance">Insurance &amp; Billing</Link>
+                </div>
+                <p className="mobile-menu__label">Contact &amp; appointments</p>
+                <div className="mobile-menu__care">
+                  {CONTACT_LINKS.map((link) => (
+                    <Link href={link.href} key={link.href}>
+                      {link.name}
+                    </Link>
+                  ))}
                 </div>
               </nav>
               <div className="mobile-menu__contact">

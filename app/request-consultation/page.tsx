@@ -3,18 +3,40 @@ import { FormEvent, useState } from "react";
 import { Phone, Send } from "lucide-react";
 export default function Consultation() {
   const [sent, setSent] = useState(false);
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const body = [
-      `Name: ${data.get("first")} ${data.get("last")}`,
-      `Phone: ${data.get("phone")}`,
-      `Email: ${data.get("email")}`,
-      "",
-      `Care request: ${data.get("message")}`,
-    ].join("\n");
-    window.location.href = `mailto:support@genfinityoandp.com?subject=${encodeURIComponent("Consultation Request")}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data.entries())),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "We could not send your request.");
+      }
+
+      form.reset();
+      setSent(true);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "We could not send your request. Please call us instead.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <div className="bg-slate-50 py-16 sm:py-24">
@@ -47,11 +69,11 @@ export default function Consultation() {
           {sent ? (
             <div className="py-12 text-center">
               <h2 className="text-2xl font-bold text-slate-900">
-                Your email draft is ready.
+                Your request has been sent.
               </h2>
               <p className="mt-3 text-slate-600">
-                Review and send it from your email app so our team can respond.
-                For immediate scheduling help, call (888) 552-6188.
+                Thank you. A Genfinity team member will contact you soon. For
+                immediate scheduling help, call (888) 552-6188.
               </p>
             </div>
           ) : (
@@ -70,6 +92,8 @@ export default function Consultation() {
                   <input
                     name="first"
                     required
+                    autoComplete="given-name"
+                    maxLength={80}
                     className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-blue"
                   />
                 </label>
@@ -78,6 +102,8 @@ export default function Consultation() {
                   <input
                     name="last"
                     required
+                    autoComplete="family-name"
+                    maxLength={80}
                     className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-blue"
                   />
                 </label>
@@ -88,6 +114,8 @@ export default function Consultation() {
                   name="phone"
                   required
                   type="tel"
+                  autoComplete="tel"
+                  maxLength={40}
                   className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-blue"
                 />
               </label>
@@ -97,6 +125,8 @@ export default function Consultation() {
                   name="email"
                   required
                   type="email"
+                  autoComplete="email"
+                  maxLength={254}
                   className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-blue"
                 />
               </label>
@@ -106,16 +136,36 @@ export default function Consultation() {
                   name="message"
                   required
                   rows={5}
+                  maxLength={3000}
                   placeholder="For example: heel pain after standing, brace no longer fitting, new prosthetic evaluation, or help understanding a referral."
                   className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-blue"
                 />
               </label>
+              <div className="absolute -left-[10000px]" aria-hidden="true">
+                <label>
+                  Leave this field empty
+                  <input name="website" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
               <p className="text-xs leading-relaxed text-slate-500">
                 Please do not send emergency concerns or highly sensitive
                 medical information by ordinary email. Call 911 for emergencies.
               </p>
-              <button className="inline-flex items-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white">
-                <Send className="w-4 h-4" /> Prepare my request
+              {error && (
+                <p
+                  role="alert"
+                  className="text-sm font-semibold text-brand-red"
+                >
+                  {error} Call (888) 552-6188 for immediate help.
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white transition-opacity disabled:cursor-wait disabled:opacity-60"
+              >
+                <Send className="w-4 h-4" />
+                {submitting ? "Sending…" : "Send my request"}
               </button>
             </form>
           )}

@@ -1,7 +1,15 @@
 "use client";
 
 import { motion } from "motion/react";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  ClipboardList,
+  ShieldCheck,
+  ArrowRight,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function ContactPage() {
@@ -149,7 +157,7 @@ export default function ContactPage() {
                   Our team can help you understand whether you may need a
                   referral, what records to bring, and which type of appointment
                   makes sense. If you prefer to write, the consultation form
-                  prepares an email with the details we need to respond.
+                  sends your request directly to our team.
                 </p>
                 <a
                   href="tel:8885526188"
@@ -165,6 +173,40 @@ export default function ContactPage() {
                 </Link>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW PATIENT INTAKE */}
+      <section className="border-t border-slate-100 bg-slate-50 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-[2rem] bg-brand-ink px-6 py-10 text-white shadow-xl sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-14 lg:py-12">
+            <div className="pointer-events-none absolute inset-0 hero-grid opacity-10" />
+            <div className="relative max-w-2xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-red">
+                <ClipboardList className="h-6 w-6" />
+              </div>
+              <p className="mt-6 text-xs font-bold uppercase tracking-[.2em] text-brand-red">
+                For new patients
+              </p>
+              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+                Complete your intake at your pace.
+              </h2>
+              <p className="mt-4 leading-relaxed text-white/70">
+                A guided, mobile-friendly form helps our team understand what
+                changed, coordinate coverage, and prepare for your first visit.
+              </p>
+              <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/75">
+                <ShieldCheck className="h-4 w-4 text-brand-red" /> Progress
+                saves on the same device when secure storage is configured.
+              </p>
+            </div>
+            <Link
+              href="/patient-intake"
+              className="relative mt-8 inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 lg:mt-0"
+            >
+              Start patient intake <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
