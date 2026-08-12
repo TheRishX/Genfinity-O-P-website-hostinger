@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import {
   blindToken,
   buildSearchTokens,
@@ -62,6 +61,7 @@ async function loadRecord(id: string) {
       referenceNumber: intake.reference_number,
       status: intake.status,
       packetVersion: intake.packet_version,
+      recordOrigin: intake.record_origin,
       submittedAt: intake.submitted_at,
       data: decryptJson<IntakeData>({
         ciphertext: intake.ciphertext,
@@ -115,7 +115,7 @@ export async function PATCH(
   if (!current)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   const body = await request.json();
-  const admin = createAdminClient();
+  const admin = await createServerSupabase();
   const changed: string[] = [];
 
   if (
@@ -156,14 +156,20 @@ export async function PATCH(
         .select("patient_id")
         .eq("id", id)
         .single();
-      if (intakeRow)
+      if (intakeRow) {
         await admin
           .from("intake_search_tokens")
-          .upsert({
+          .delete()
+          .eq("patient_id", intakeRow.patient_id)
+          .eq("field", "ssn");
+        await admin
+          .from("intake_search_tokens")
+          .insert({
             patient_id: intakeRow.patient_id,
             field: "ssn",
             token_hash: blindToken(normalizeSearch(ssn)),
           });
+      }
     }
   }
   const amendment = body.amendment;
@@ -173,20 +179,33 @@ export async function PATCH(
     typeof amendment.changes === "object"
   ) {
     const allowed = [
+      "legalName",
+      "preferredName",
+      "dateOfBirth",
+      "sexAtBirth",
       "mobilePhone",
+      "homePhone",
       "email",
       "streetAddress",
       "city",
       "state",
       "zip",
+      "primaryLanguage",
+      "interpreterNeeded",
+      "maritalStatus",
     ];
     const changes = Object.fromEntries(
       Object.entries(amendment.changes)
         .filter(
           ([key, value]) =>
-            allowed.includes(key) && typeof value === "string" && value.trim(),
+            allowed.includes(key) &&
+            (typeof value === "string" || typeof value === "boolean") &&
+            value !== current.patient[key as keyof typeof current.patient],
         )
-        .map(([key, value]) => [key, String(value).trim()]),
+        .map(([key, value]) => [
+          key,
+          typeof value === "string" ? value.trim() : value,
+        ]),
     );
     const fields = Object.keys(changes);
     if (fields.length) {
@@ -224,13 +243,18 @@ export async function PATCH(
           .from("intake_search_tokens")
           .delete()
           .eq("patient_id", intakeRow.patient_id)
-          .in("field", ["email", "address"]);
+          .in("field", ["name", "email", "address"]);
         await admin
           .from("intake_search_tokens")
           .insert(
-            buildSearchTokens({ email: merged.email, address }).map(
-              (token) => ({ patient_id: intakeRow.patient_id, ...token }),
-            ),
+            buildSearchTokens({
+              name: merged.legalName,
+              email: merged.email,
+              address,
+            }).map((token) => ({
+              patient_id: intakeRow.patient_id,
+              ...token,
+            })),
           );
       }
       changed.push(...fields.map((field) => `amendment.${field}`));
@@ -245,5 +269,67 @@ export async function PATCH(
         action: "owner_update",
         changed_fields: changed,
       });
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  if (!(await requireOwner()))
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!requireSameOrigin(request))
+    return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  const id = (await context.params).id;
+  const supabase = await createServerSupabase();
+  const { data: intake } = await supabase
+    .from("intakes")
+    .select("id,patient_id,reference_number")
+    .eq("id", id)
+    .maybeSingle();
+  if (!intake)
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const { data: signature } = await supabase
+    .from("intake_signatures")
+    .select("storage_path")
+    .eq("intake_id", id)
+    .maybeSingle();
+  if (signature?.storage_path)
+    await supabase.storage
+      .from("intake-signatures")
+      .remove([signature.storage_path]);
+
+  const deletions = [
+    supabase.from("consent_records").delete().eq("intake_id", id),
+    supabase.from("intake_signatures").delete().eq("intake_id", id),
+    supabase.from("intake_amendments").delete().eq("intake_id", id),
+    supabase.from("intake_audit_events").delete().eq("intake_id", id),
+    supabase.from("office_checklists").delete().eq("intake_id", id),
+  ];
+  const results = await Promise.all(deletions);
+  if (results.some((result) => result.error))
+    return NextResponse.json(
+      { error: "Unable to remove related patient records." },
+      { status: 500 },
+    );
+  const intakeDelete = await supabase.from("intakes").delete().eq("id", id);
+  if (intakeDelete.error)
+    return NextResponse.json(
+      { error: "Unable to delete this intake." },
+      { status: 500 },
+    );
+
+  const { count } = await supabase
+    .from("intakes")
+    .select("id", { count: "exact", head: true })
+    .eq("patient_id", intake.patient_id);
+  if (!count) {
+    await supabase
+      .from("intake_search_tokens")
+      .delete()
+      .eq("patient_id", intake.patient_id);
+    await supabase.from("patients").delete().eq("id", intake.patient_id);
+  }
   return NextResponse.json({ ok: true });
 }

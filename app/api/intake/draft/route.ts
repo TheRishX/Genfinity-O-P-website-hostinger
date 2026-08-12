@@ -26,7 +26,9 @@ async function readDraft(request: NextRequest) {
     return null;
   const { data } = await createAdminClient()
     .from("intake_drafts")
-    .select("id,secret_hash,ciphertext,iv,auth_tag,current_step,expires_at")
+    .select(
+      "id,secret_hash,ciphertext,iv,auth_tag,current_step,expires_at,updated_at",
+    )
     .eq("id", id)
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
@@ -34,6 +36,7 @@ async function readDraft(request: NextRequest) {
   return {
     id: data.id,
     currentStep: data.current_step,
+    updatedAt: data.updated_at,
     data: decryptJson<IntakeData>({
       ciphertext: data.ciphertext,
       iv: data.iv,
@@ -48,14 +51,18 @@ export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured() || !intakeLiveReady())
     return NextResponse.json({
       configured: false,
+      hasDraft: false,
       data: defaultIntakeData,
       currentStep: 0,
+      updatedAt: null,
     });
   const draft = await readDraft(request);
   return NextResponse.json({
     configured: true,
+    hasDraft: Boolean(draft),
     data: draft?.data ?? defaultIntakeData,
     currentStep: draft?.currentStep ?? 0,
+    updatedAt: draft?.updatedAt ?? null,
   });
 }
 

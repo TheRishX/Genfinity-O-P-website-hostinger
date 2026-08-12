@@ -19,8 +19,8 @@ export default async function StaffIntakesPage() {
     redirect("/staff/login");
   if (!(await requireOwner())) redirect("/staff/login");
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="h-full min-h-0 bg-slate-50">
       <IntakeDashboard />
-    </main>
+    </div>
   );
 }

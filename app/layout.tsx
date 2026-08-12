@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { MobileCallBar } from "@/components/MobileCallBar";
+import { AppShell } from "@/components/AppShell";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -56,10 +54,7 @@ export default function RootLayout({
         className="font-inter bg-slate-50 text-slate-800 antialiased"
         suppressHydrationWarning
       >
-        <Navbar />
-        <main className="min-h-screen pt-20">{children}</main>
-        <Footer />
-        <MobileCallBar />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

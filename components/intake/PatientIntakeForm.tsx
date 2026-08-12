@@ -400,6 +400,63 @@ function StepShell({
   );
 }
 
+const LOCAL_DRAFT_KEY = "genfinity_patient_intake_draft_v1";
+const LOCAL_DRAFT_TTL = 7 * 24 * 60 * 60 * 1000;
+
+type LocalDraft = {
+  version: 1;
+  data: IntakeData;
+  currentStep: number;
+  savedAt: number;
+  expiresAt: number;
+};
+
+function readLocalDraft(): LocalDraft | null {
+  try {
+    const stored = window.localStorage.getItem(LOCAL_DRAFT_KEY);
+    if (!stored) return null;
+    const draft = JSON.parse(stored) as Partial<LocalDraft>;
+    if (
+      draft.version !== 1 ||
+      !draft.data ||
+      typeof draft.data !== "object" ||
+      !Number.isInteger(draft.currentStep) ||
+      typeof draft.savedAt !== "number" ||
+      typeof draft.expiresAt !== "number"
+    ) {
+      window.localStorage.removeItem(LOCAL_DRAFT_KEY);
+      return null;
+    }
+    if (draft.expiresAt <= Date.now()) {
+      window.localStorage.removeItem(LOCAL_DRAFT_KEY);
+      return null;
+    }
+    return draft as LocalDraft;
+  } catch {
+    return null;
+  }
+}
+
+function writeLocalDraft(data: IntakeData, currentStep: number) {
+  const savedAt = Date.now();
+  const draft: LocalDraft = {
+    version: 1,
+    data,
+    currentStep,
+    savedAt,
+    expiresAt: savedAt + LOCAL_DRAFT_TTL,
+  };
+  window.localStorage.setItem(LOCAL_DRAFT_KEY, JSON.stringify(draft));
+}
+
+function clearLocalDraft() {
+  try {
+    window.localStorage.removeItem(LOCAL_DRAFT_KEY);
+  } catch {
+    // Storage may be unavailable in restricted browser modes.
+  }
+}
+
 export function PatientIntakeForm() {
   const [data, setData] = useState<IntakeData>(defaultIntakeData);
   const [step, setStep] = useState(0);
@@ -414,19 +471,74 @@ export function PatientIntakeForm() {
   const [website, setWebsite] = useState("");
   const headingRef = useRef<HTMLDivElement>(null);
   const submissionKey = useRef(crypto.randomUUID());
+  const submittedRef = useRef(false);
 
   useEffect(() => {
+    const localDraft = readLocalDraft();
+    if (localDraft) {
+      setData(localDraft.data);
+      setStep(
+        Math.max(0, Math.min(steps.length - 1, localDraft.currentStep)),
+      );
+      setLoaded(true);
+    }
     fetch("/api/intake/draft", { cache: "no-store" })
       .then((response) => response.json())
       .then((result) => {
         setConfigured(result.configured !== false);
-        if (result.data) setData(result.data);
-        if (Number.isInteger(result.currentStep)) {
-          setStep(Math.max(0, Math.min(steps.length - 1, result.currentStep)));
+        const serverSavedAt = result.updatedAt
+          ? new Date(result.updatedAt).getTime()
+          : 0;
+        const useServerDraft =
+          result.hasDraft === true &&
+          (!localDraft || serverSavedAt > localDraft.savedAt);
+        const restoredData = useServerDraft ? result.data : localDraft?.data;
+        const restoredStep = useServerDraft
+          ? result.currentStep
+          : localDraft?.currentStep;
+        if (restoredData) setData(restoredData);
+        if (Number.isInteger(restoredStep)) {
+          setStep(
+            Math.max(0, Math.min(steps.length - 1, Number(restoredStep))),
+          );
+        }
+      })
+      .catch(() => {
+        setConfigured(false);
+        if (localDraft) {
+          setData(localDraft.data);
+          setStep(
+            Math.max(
+              0,
+              Math.min(steps.length - 1, localDraft.currentStep),
+            ),
+          );
         }
       })
       .finally(() => setLoaded(true));
   }, []);
+
+  useEffect(() => {
+    if (!loaded || reference) return;
+    const persist = () => {
+      if (submittedRef.current) return;
+      try {
+        writeLocalDraft(data, step);
+        setSaveState("saved");
+      } catch {
+        setSaveState("idle");
+      }
+    };
+    const timer = window.setTimeout(() => {
+      setSaveState("saving");
+      persist();
+    }, 250);
+    window.addEventListener("pagehide", persist);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pagehide", persist);
+    };
+  }, [data, loaded, reference, step]);
 
   useEffect(() => {
     if (!loaded || !configured || reference) return;
@@ -497,6 +609,8 @@ export function PatientIntakeForm() {
       const result = await response.json();
       if (!response.ok)
         throw new Error(result.error || "Unable to submit intake");
+      submittedRef.current = true;
+      clearLocalDraft();
       setReference(result.reference);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
@@ -1349,13 +1463,13 @@ export function PatientIntakeForm() {
         </span>
         <span className="inline-flex items-center gap-2">
           <Save className="h-3.5 w-3.5" />
-          {configured
-            ? saveState === "saving"
-              ? "Saving…"
-              : saveState === "saved"
-                ? "Progress saved on this device"
-                : "Ready"
-            : "Secure storage is not configured"}
+          {saveState === "saving"
+            ? "Saving…"
+            : saveState === "saved"
+              ? "Progress saved on this device"
+              : configured
+                ? "Ready"
+                : "Local draft ready"}
         </span>
       </div>
       <div className="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-xl shadow-slate-200/50">

@@ -253,10 +253,12 @@ export type Database = {
         Row: {
           auth_tag: string
           ciphertext: string
+          created_by: string | null
           id: string
           iv: string
           packet_version: string
           patient_id: string
+          record_origin: string
           reference_number: string
           signed_snapshot_hash: string
           status: string
@@ -266,10 +268,12 @@ export type Database = {
         Insert: {
           auth_tag: string
           ciphertext: string
+          created_by?: string | null
           id?: string
           iv: string
           packet_version: string
           patient_id: string
+          record_origin?: string
           reference_number: string
           signed_snapshot_hash: string
           status?: string
@@ -279,10 +283,12 @@ export type Database = {
         Update: {
           auth_tag?: string
           ciphertext?: string
+          created_by?: string | null
           id?: string
           iv?: string
           packet_version?: string
           patient_id?: string
+          record_origin?: string
           reference_number?: string
           signed_snapshot_hash?: string
           status?: string

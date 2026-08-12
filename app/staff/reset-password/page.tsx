@@ -13,10 +13,10 @@ export default async function ResetOwnerPasswordPage({
 }) {
   const token = (await searchParams).token || "";
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-20 sm:py-28">
+    <div className="h-full overflow-y-auto bg-slate-50 px-4 py-12 sm:py-20">
       <div className="mx-auto max-w-md">
         <ResetOwnerPassword token={token} />
       </div>
-    </main>
+    </div>
   );
 }

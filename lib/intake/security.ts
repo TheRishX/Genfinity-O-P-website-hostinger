@@ -26,8 +26,9 @@ export function requireSameOrigin(request: NextRequest) {
 }
 
 export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
-  const key =
+  const client =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  const key = `${request.method}:${request.nextUrl.pathname}:${client}`;
   const now = Date.now();
   const current = hits.get(key);
   if (!current || current.resetAt < now) {
