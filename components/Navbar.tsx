@@ -249,6 +249,15 @@ export function Navbar() {
                       </li>
                     ))}
                 </ul>
+                <div className="mx-4 mt-4">
+                  <Link
+                    href="/patient-intake"
+                    className="flex items-center justify-between rounded-2xl bg-brand-red px-5 py-4 font-bold text-white shadow-lg shadow-brand-red/20"
+                  >
+                    <span>Register as a New Patient</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
                 <p className="mobile-menu__label">Care &amp; services</p>
                 <div className="mobile-menu__care">
                   {CARE_LINKS.map((link) => (

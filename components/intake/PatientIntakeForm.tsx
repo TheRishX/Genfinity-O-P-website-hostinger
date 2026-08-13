@@ -1459,7 +1459,7 @@ export function PatientIntakeForm() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600 shadow-sm">
         <span className="inline-flex items-center gap-2 font-semibold">
           <ShieldCheck className="h-4 w-4 text-brand-red" />
-          Secure patient intake · Step {step + 1} of {steps.length}
+          New patient registration · Step {step + 1} of {steps.length}
         </span>
         <span className="inline-flex items-center gap-2">
           <Save className="h-3.5 w-3.5" />

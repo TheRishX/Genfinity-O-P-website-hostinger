@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { PatientIntakeForm } from "@/components/intake/PatientIntakeForm";
 
 export const metadata: Metadata = {
-  title: "New Patient Intake | Genfinity O&P",
+  title: "New Patient Registration | Genfinity O&P",
   description:
-    "Complete your Genfinity O&P new patient intake in a guided, mobile-friendly form.",
+    "Register as a new Genfinity O&P patient with a guided, mobile-friendly form.",
   robots: { index: false, follow: false },
 };
 
