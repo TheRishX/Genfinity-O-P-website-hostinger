@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Award, HeartHandshake, Microscope } from "lucide-react";
+import { Award, BadgeCheck, HeartHandshake, Microscope, Users } from "lucide-react";
 import { SkeletonImage } from "@/components/SkeletonImage";
 const consultationImage = "/images/genfinity/orthotic-clinical-care.avif";
 const orthoticsImage = "/images/genfinity/prosthetic-community.avif";
@@ -77,8 +77,8 @@ export default function AboutPage() {
                   are—not a label on a chart.
                 </p>
                 <p>
-                  In Tarzana, Genfinity O&amp;P brings together more than 25
-                  years of clinical experience, precise assessment, in-house
+                  In Tarzana, Genfinity O&amp;P brings together 30 years of
+                  collective experience, precise assessment, in-house
                   fabrication capability, careful fitting, and long-term
                   follow-up. The process is personal because the outcome affects
                   your everyday life.
@@ -104,6 +104,79 @@ export default function AboutPage() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* CARE TEAM */}
+      <section className="relative overflow-hidden border-y border-slate-100 bg-slate-50 py-20 sm:py-24">
+        <div className="pointer-events-none absolute inset-0 hero-grid opacity-[.035]" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mx-auto max-w-3xl text-center"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-red text-white shadow-lg shadow-brand-red/20">
+              <Users className="h-6 w-6" />
+            </div>
+            <p className="mt-5 text-xs font-bold uppercase tracking-[.2em] text-brand-red">
+              Meet your care team
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink sm:text-4xl">
+              Experience you can feel confident in.
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+              Our clinicians bring 30 years of collective experience to thoughtful evaluations, precise fittings, and care shaped around your daily life.
+            </p>
+          </motion.div>
+
+          <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2">
+            {[
+              {
+                initials: "DB",
+                name: "Deepak Kumar Bhardwaj",
+                title: "Orthotist · Pedorthist · Orthotic Fitter",
+                description:
+                  "Focused on practical solutions, careful fitting, and helping every patient move with greater comfort and confidence.",
+              },
+              {
+                initials: "BS",
+                name: "Blake Jackson Sanders",
+                title: "CPO · Certified Prosthetist Orthotist",
+                description:
+                  "Bringing certified prosthetic and orthotic expertise to patient-centered evaluation, device selection, and follow-up care.",
+              },
+            ].map((member, index) => (
+              <motion.article
+                key={member.name}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand-red/25 hover:shadow-xl hover:shadow-slate-200/60 sm:p-8"
+              >
+                <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-brand-red/[.035] transition group-hover:bg-brand-red/[.065]" />
+                <div className="relative flex items-start gap-5">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-brand-ink text-lg font-bold tracking-wide text-white shadow-lg">
+                    {member.initials}
+                  </div>
+                  <div className="min-w-0 pt-1">
+                    <BadgeCheck className="mb-3 h-5 w-5 text-brand-red" />
+                    <h3 className="text-xl font-bold leading-tight text-brand-ink sm:text-2xl">
+                      {member.name}
+                    </h3>
+                    <p className="mt-2 font-semibold leading-relaxed text-brand-red">
+                      {member.title}
+                    </p>
+                  </div>
+                </div>
+                <p className="relative mt-6 border-t border-slate-100 pt-5 leading-relaxed text-slate-600">
+                  {member.description}
+                </p>
+              </motion.article>
+            ))}
           </div>
         </div>
       </section>
@@ -135,9 +208,8 @@ export default function AboutPage() {
 
               <div className="space-y-6 text-slate-600 leading-relaxed text-lg">
                 <p>
-                  With more than 25 years in orthotics and prosthetics, Deepak
-                  brings experienced clinical judgment to each evaluation,
-                  fitting, and adjustment. That experience is used for one
+                  Deepak brings experienced clinical judgment to each
+                  evaluation, fitting, and adjustment. That experience is used for one
                   purpose: solving the problem in front of the patient.
                 </p>
                 <p>

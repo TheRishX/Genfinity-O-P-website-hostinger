@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { name: "Services", href: "/services" },
   { name: "About Us", href: "/about" },
   { name: "Patient Resources", href: "/patient-resources" },
+  { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -25,6 +26,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,7 +94,7 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     className={`text-sm font-medium transition-colors hover:text-brand-red ${
-                      pathname === link.href
+                      isActive(link.href)
                         ? "text-brand-red font-semibold"
                         : "text-slate-600"
                     }`}
@@ -128,7 +131,7 @@ export function Navbar() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className={`text-sm font-medium transition-colors hover:text-brand-red ${pathname === link.href ? "text-brand-red font-semibold" : "text-slate-600"}`}
+                    className={`text-sm font-medium transition-colors hover:text-brand-red ${isActive(link.href) ? "text-brand-red font-semibold" : "text-slate-600"}`}
                   >
                     {link.name}
                   </Link>
@@ -240,7 +243,7 @@ export function Navbar() {
                       <li key={link.name}>
                         <Link
                           href={link.href}
-                          className={pathname === link.href ? "is-active" : ""}
+                          className={isActive(link.href) ? "is-active" : ""}
                         >
                           <span>0{index + 1}</span>
                           {link.name}

@@ -34,6 +34,7 @@ export function Footer() {
               ["Our Process", "/the-process"],
               ["Insurance", "/insurance"],
               ["Resources", "/patient-resources"],
+              ["Blog", "/blog"],
               ["About", "/about"],
               ["Contact", "/contact"],
             ].map(([item, href]) => (
@@ -86,6 +87,7 @@ export function Footer() {
                 ["Locations", "/locations"],
                 ["About Us", "/about"],
                 ["Patient Resources", "/patient-resources"],
+                ["Blog", "/blog"],
                 ["Careers", "/careers"],
                 ["Contact", "/contact"],
               ].map(([item, href]) => (

@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "slategrey-magpie-594089.hostingersite.com",
+        port: "",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
   transpilePackages: ["motion"],

@@ -1,0 +1,39 @@
+# Genfinity O&P
+
+> Genfinity O&P is an orthotic and prosthetic clinic in Tarzana, Los Angeles, providing personalized orthotics, prosthetics, custom foot orthotics, diabetic footwear, pediatric bracing, and long-term fitting support.
+
+## Primary pages
+
+- [Home](https://genfinityoandp.com/): Overview of the clinic and care offered.
+- [About](https://genfinityoandp.com/about): Mission, clinical approach, and experience.
+- [Services](https://genfinityoandp.com/services): Overview of orthotic, prosthetic, and custom insole services.
+- [Custom orthotics](https://genfinityoandp.com/services/orthotics): Custom and custom-fit orthotic care.
+- [Prosthetics](https://genfinityoandp.com/services/prosthetics): Personalized lower- and upper-extremity prosthetic care.
+- [Custom foot orthotics](https://genfinityoandp.com/services/custom-insoles): Custom insoles, gait assessment, and pressure relief.
+- [Patient resources](https://genfinityoandp.com/patient-resources): Appointment, insurance, financial, and care-process guidance.
+- [Frequently asked questions](https://genfinityoandp.com/faqs): Common questions about devices, visits, prescriptions, and insurance.
+- [Location and hours](https://genfinityoandp.com/locations): Tarzana clinic address, hours, and directions.
+- [Contact](https://genfinityoandp.com/contact): Contact form and consultation information.
+
+## Clinic information
+
+- Name: Genfinity O&P LLC
+- Address: 18401 Burbank Blvd, Suite 215, Tarzana, CA 91356, United States
+- Phone: +1-888-552-6188
+- Email: support@genfinityoandp.com
+- Hours: Monday-Friday, 10:00-18:00; Saturday-Sunday by appointment
+- Website: https://genfinityoandp.com/
+
+## Important guidance
+
+- Website information is educational and does not replace individual medical advice.
+- For a medical emergency, call 911 or seek emergency medical care.
+- Do not submit private health information through general email or the public contact form.
+- The patient registration and staff areas are private workflows and should not be indexed or summarized.
+
+## Site indexes and policies
+
+- [XML sitemap](https://genfinityoandp.com/sitemap.xml)
+- [Plain-text sitemap](https://genfinityoandp.com/sitemap.txt)
+- [Privacy policy](https://genfinityoandp.com/privacy)
+- [Terms and conditions](https://genfinityoandp.com/terms)

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   ArrowRight,
@@ -57,6 +58,26 @@ const content = {
     image: insolesImage,
   },
 } as const;
+
+const serviceSeo = {
+  orthotics: "/services/orthotics",
+  prosthetics: "/services/prosthetics",
+  "custom-insoles": "/services/custom-insoles",
+} as const;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ service: string }>;
+}): Promise<Metadata> {
+  const { service } = await params;
+  const path = serviceSeo[service as keyof typeof serviceSeo];
+  if (!path) return {};
+  const { pageMetadata } = await import("@/lib/seo");
+  const metadata = pageMetadata(path);
+  const title = content[service as keyof typeof content].eyebrow;
+  return { ...metadata, title: { absolute: `${title} | Genfinity O&P` } };
+}
 
 export function generateStaticParams() {
   return Object.keys(content).map((service) => ({ service }));
