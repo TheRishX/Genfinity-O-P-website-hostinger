@@ -1,8 +1,18 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Award, BadgeCheck, HeartHandshake, Microscope, Users } from "lucide-react";
+import {
+  ArrowUpRight,
+  Award,
+  BadgeCheck,
+  CheckCircle2,
+  HeartHandshake,
+  Microscope,
+  Users,
+} from "lucide-react";
 import { SkeletonImage } from "@/components/SkeletonImage";
+import deepakImage from "@/assets/images/clinical/1.jpg";
+import blakeImage from "@/assets/images/clinical/2.jpg";
 const consultationImage = "/images/genfinity/orthotic-clinical-care.avif";
 const orthoticsImage = "/images/genfinity/prosthetic-community.avif";
 
@@ -109,8 +119,10 @@ export default function AboutPage() {
       </section>
 
       {/* CARE TEAM */}
-      <section className="relative overflow-hidden border-y border-slate-100 bg-slate-50 py-20 sm:py-24">
-        <div className="pointer-events-none absolute inset-0 hero-grid opacity-[.035]" />
+      <section className="relative overflow-hidden border-y border-slate-100 bg-brand-ink py-20 text-white sm:py-28">
+        <div className="pointer-events-none absolute inset-0 hero-grid opacity-20" />
+        <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-brand-red/20 blur-3xl" />
+        <div className="pointer-events-none absolute -left-40 bottom-0 h-96 w-96 rounded-full bg-brand-blue/30 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
@@ -118,16 +130,16 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="mx-auto max-w-3xl text-center"
           >
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-red text-white shadow-lg shadow-brand-red/20">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-red text-white shadow-lg shadow-brand-red/30">
               <Users className="h-6 w-6" />
             </div>
             <p className="mt-5 text-xs font-bold uppercase tracking-[.2em] text-brand-red">
-              Meet your care team
+              The people behind your progress
             </p>
-            <h2 className="mt-3 text-3xl font-bold text-brand-ink sm:text-4xl">
-              Experience you can feel confident in.
+            <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              Expertise with a human face.
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+            <p className="mt-4 text-lg leading-relaxed text-white/65">
               Our clinicians bring 30 years of collective experience to thoughtful evaluations, precise fittings, and care shaped around your daily life.
             </p>
           </motion.div>
@@ -135,18 +147,22 @@ export default function AboutPage() {
           <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2">
             {[
               {
-                initials: "DB",
+                image: deepakImage,
+                fallback: consultationImage,
                 name: "Deepak Kumar Bhardwaj",
                 title: "Orthotist · Pedorthist · Orthotic Fitter",
                 description:
                   "Focused on practical solutions, careful fitting, and helping every patient move with greater comfort and confidence.",
+                focus: "Orthotics & patient mobility",
               },
               {
-                initials: "BS",
+                image: blakeImage,
+                fallback: orthoticsImage,
                 name: "Blake Jackson Sanders",
                 title: "CPO · Certified Prosthetist Orthotist",
                 description:
                   "Bringing certified prosthetic and orthotic expertise to patient-centered evaluation, device selection, and follow-up care.",
+                focus: "Prosthetics & orthotic care",
               },
             ].map((member, index) => (
               <motion.article
@@ -155,26 +171,46 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand-red/25 hover:shadow-xl hover:shadow-slate-200/60 sm:p-8"
+                className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[.07] shadow-2xl shadow-black/20 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-brand-red/50 hover:bg-white/[.1]"
               >
-                <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-brand-red/[.035] transition group-hover:bg-brand-red/[.065]" />
-                <div className="relative flex items-start gap-5">
-                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-brand-ink text-lg font-bold tracking-wide text-white shadow-lg">
-                    {member.initials}
-                  </div>
-                  <div className="min-w-0 pt-1">
-                    <BadgeCheck className="mb-3 h-5 w-5 text-brand-red" />
-                    <h3 className="text-xl font-bold leading-tight text-brand-ink sm:text-2xl">
-                      {member.name}
-                    </h3>
-                    <p className="mt-2 font-semibold leading-relaxed text-brand-red">
-                      {member.title}
-                    </p>
+                <div className="relative aspect-[1.35/1] overflow-hidden bg-brand-blue">
+                  <SkeletonImage
+                    src={member.image}
+                    fallbackSrc={member.fallback}
+                    alt={`${member.name}, ${member.title}`}
+                    fill
+                    className="object-cover object-top transition duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-transparent to-transparent opacity-80" />
+                  <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                    <span className="rounded-full border border-white/20 bg-brand-ink/60 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.16em] text-white/85 backdrop-blur-md">
+                      Genfinity O&amp;P
+                    </span>
+                    <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-red text-white shadow-lg transition group-hover:rotate-45">
+                      <ArrowUpRight className="h-5 w-5" />
+                    </span>
                   </div>
                 </div>
-                <p className="relative mt-6 border-t border-slate-100 pt-5 leading-relaxed text-slate-600">
-                  {member.description}
-                </p>
+                <div className="relative p-6 sm:p-7">
+                  <div className="flex items-start gap-3">
+                    <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-brand-red" />
+                    <div>
+                      <h3 className="text-xl font-bold leading-tight text-white sm:text-2xl">
+                      {member.name}
+                      </h3>
+                      <p className="mt-2 font-semibold leading-relaxed text-brand-red">
+                        {member.title}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-5 border-t border-white/10 pt-5 leading-relaxed text-white/65">
+                    {member.description}
+                  </p>
+                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-white/85">
+                    <CheckCircle2 className="h-4 w-4 text-brand-red" />
+                    {member.focus}
+                  </div>
+                </div>
               </motion.article>
             ))}
           </div>
