@@ -9,6 +9,7 @@ export const WORDPRESS_URL =
 
 const API_URL = `${WORDPRESS_URL.replace(/\/$/, "")}/wp-json/wp/v2`;
 const REVALIDATE_SECONDS = 3600;
+const REQUEST_TIMEOUT_MS = 15000;
 
 export interface RenderedField {
   rendered: string;
@@ -122,16 +123,43 @@ function buildApiUrl(path: string, params: Record<string, string | number>) {
 }
 
 async function fetchWordPress(url: URL) {
-  const response = await fetch(url, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: REVALIDATE_SECONDS, tags: ["wordpress-posts"] },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+      next: { revalidate: REVALIDATE_SECONDS, tags: ["wordpress-posts"] },
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error(`WordPress request timed out after ${REQUEST_TIMEOUT_MS}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     throw new Error(`WordPress request failed with status ${response.status}`);
   }
 
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    throw new Error("WordPress returned a non-JSON response");
+  }
+
   return response;
+}
+
+async function readJson<T>(response: Response): Promise<T> {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    throw new Error("WordPress returned invalid JSON");
+  }
 }
 
 export const getPosts = cache(
@@ -145,7 +173,10 @@ export const getPosts = cache(
       _embed: 1,
     });
     const response = await fetchWordPress(url);
-    const posts = (await response.json()) as WordPressPost[];
+    const posts = await readJson<WordPressPost[]>(response);
+    if (!Array.isArray(posts)) {
+      throw new Error("WordPress returned an invalid posts payload");
+    }
 
     return {
       posts,
@@ -167,7 +198,10 @@ export const getPostBySlug = cache(
       _embed: 1,
     });
     const response = await fetchWordPress(url);
-    const posts = (await response.json()) as WordPressPost[];
+    const posts = await readJson<WordPressPost[]>(response);
+    if (!Array.isArray(posts)) {
+      throw new Error("WordPress returned an invalid post payload");
+    }
     return posts[0] || null;
   },
 );
@@ -188,7 +222,7 @@ export const getAllPostSlugs = cache(async (): Promise<WordPressPostReference[]>
     });
     const response = await fetchWordPress(url);
     return {
-      posts: (await response.json()) as WordPressPostReference[],
+      posts: await readJson<WordPressPostReference[]>(response),
       totalPages: Number(response.headers.get("X-WP-TotalPages") || 1),
     };
   };
