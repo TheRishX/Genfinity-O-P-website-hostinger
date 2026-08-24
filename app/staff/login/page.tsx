@@ -15,7 +15,7 @@ export default function StaffLoginPage() {
     process.env.OWNER_EMAIL,
   );
   return (
-    <div className="h-full overflow-y-auto bg-slate-50 px-4 py-12 sm:py-20">
+    <div className="grid min-h-screen place-items-center overflow-y-auto bg-[#f6f7f8] px-4 py-10">
       <div className="mx-auto max-w-md">
         <StaffLogin configured={configured} />
       </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Phone, Menu, X, ChevronDown, MapPin, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -79,9 +80,12 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <img
-              src="/images/brand/genfinity-logo.webp"
+            <Image
+              src="/images/brand/genfinity-logo-uploaded.webp"
               alt="Genfinity O&P"
+              width={1100}
+              height={275}
+              priority
               className="h-11 w-auto max-w-[190px] object-contain object-left"
             />
           </Link>
@@ -185,9 +189,12 @@ export function Navbar() {
           className="mobile-nav__brand"
           aria-label="Genfinity O&P home"
         >
-          <img
-            src="/images/brand/genfinity-logo.webp"
+          <Image
+            src="/images/brand/genfinity-logo-uploaded.webp"
             alt="Genfinity O&P"
+            width={1100}
+            height={275}
+            priority
             className="h-10 w-auto max-w-[168px] object-contain object-left"
           />
         </Link>

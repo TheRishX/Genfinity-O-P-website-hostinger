@@ -11,11 +11,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Navbar />
+      {!isStaffRoute && <Navbar />}
       <main
         className={
           isStaffRoute
-            ? "staff-app-shell fixed inset-0 overflow-hidden bg-slate-50 pt-[72px] lg:pt-[108px]"
+            ? "staff-app-shell min-h-screen bg-slate-50"
             : "min-h-screen pt-20"
         }
       >

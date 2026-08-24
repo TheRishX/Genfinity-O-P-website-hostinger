@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { KeyRound, LockKeyhole } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 
@@ -71,19 +72,21 @@ export function StaffLogin({ configured }: { configured: boolean }) {
     );
 
   return (
-    <div className="rounded-[2rem] border border-slate-100 bg-white p-7 shadow-2xl shadow-slate-200/60 sm:p-10">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-red text-white">
-        <LockKeyhole className="h-6 w-6" />
-      </div>
-      <p className="mt-6 text-xs font-bold uppercase tracking-[.2em] text-brand-red">
-        Restricted access
-      </p>
-      <h1 className="mt-3 text-3xl font-bold text-brand-ink">
-        Genfinity owner portal
+    <div className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/50 sm:p-10">
+      <Image
+        src="/images/brand/genfinity-logo-uploaded.webp"
+        alt="Genfinity O&P"
+        width={1100}
+        height={275}
+        priority
+        className="h-auto w-[220px] object-contain object-left"
+      />
+      <h1 className="mt-9 text-3xl font-bold text-brand-ink">
+        Welcome back
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-slate-600">
-        Sign in with the authorized owner email and password to review patient
-        intake records.
+        Sign in once to open the patient workspace. You stay signed in on this
+        device until you choose Sign out.
       </p>
       <form onSubmit={signIn} className="mt-8 space-y-5">
           <label className="block text-sm font-semibold text-brand-ink">
@@ -110,8 +113,8 @@ export function StaffLogin({ configured }: { configured: boolean }) {
             disabled={busy}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white disabled:opacity-60"
           >
-            <KeyRound className="h-4 w-4" />
-            {busy ? "Signing in…" : "Continue securely"}
+            {busy ? "Signing in…" : "Open patient workspace"}
+            {!busy && <ArrowRight className="h-4 w-4" />}
           </button>
           <button
             type="button"

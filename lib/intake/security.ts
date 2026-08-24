@@ -46,13 +46,14 @@ export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
 
 export async function requireOwner() {
   const supabase = await createServerSupabase();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getClaims();
+  const claims = data?.claims;
   if (
-    !user ||
-    user.email?.toLowerCase() !== process.env.OWNER_EMAIL?.toLowerCase()
+    error ||
+    !claims?.sub ||
+    String(claims.email || "").toLowerCase() !==
+      process.env.OWNER_EMAIL?.toLowerCase()
   )
     return null;
-  return user;
+  return { id: claims.sub, email: String(claims.email) };
 }

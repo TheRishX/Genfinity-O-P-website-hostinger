@@ -27,10 +27,14 @@ export async function proxy(request: NextRequest) {
       },
     },
   );
-  await supabase.auth.getUser();
+  // JWT claims are verified locally (or with cached signing keys), avoiding an
+  // Auth network round-trip on every staff navigation.
+  await supabase.auth.getClaims();
   response.headers.set("Cache-Control", "private, no-store");
   response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
 }
 
-export const config = { matcher: ["/staff/:path*"] };
+export const config = {
+  matcher: ["/staff/intakes/:path*"],
+};

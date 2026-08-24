@@ -28,6 +28,10 @@
   }
 }
 
+body:has(.staff-app-shell) {
+  padding-bottom: 0;
+}
+
 /* WordPress article typography is deliberately scoped so CMS markup cannot
    leak into the rest of the Genfinity interface. */
 .wp-article-content {

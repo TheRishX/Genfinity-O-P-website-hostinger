@@ -26,6 +26,10 @@ async function loadRecord(id: string) {
     { data: consents },
     { data: audits },
     { data: amendments },
+    { data: care },
+    { data: visits },
+    { data: orders },
+    { data: messages },
   ] = await Promise.all([
     supabase
       .from("patients")
@@ -53,6 +57,27 @@ async function loadRecord(id: string) {
       .select("id,reason,changed_fields,created_at,ciphertext,iv,auth_tag")
       .eq("intake_id", id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("patient_care_profiles")
+      .select("*")
+      .eq("patient_id", intake.patient_id)
+      .maybeSingle(),
+    supabase
+      .from("patient_visits")
+      .select("*")
+      .eq("patient_id", intake.patient_id)
+      .order("scheduled_at", { ascending: false }),
+    supabase
+      .from("device_orders")
+      .select("*")
+      .eq("patient_id", intake.patient_id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("patient_messages")
+      .select("id,patient_id,template_id,subject,delivery_status,error_message,sent_at,created_at")
+      .eq("patient_id", intake.patient_id)
+      .order("created_at", { ascending: false })
+      .limit(50),
   ]);
   if (!patient) return null;
   return {
@@ -73,6 +98,10 @@ async function loadRecord(id: string) {
       { ciphertext: patient.ciphertext, iv: patient.iv, tag: patient.auth_tag },
     ),
     checklist,
+    care,
+    visits: visits || [],
+    orders: orders || [],
+    messages: messages || [],
     consents: consents || [],
     audits: audits || [],
     amendments: (amendments || []).map((item) => ({

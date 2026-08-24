@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Clock, ArrowRight } from "lucide-react";
 
 export function Footer() {
@@ -8,9 +9,11 @@ export function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mobile-footer lg:hidden">
           <div className="mobile-footer__top">
-            <img
-              src="/images/brand/genfinity-logo.webp"
+            <Image
+              src="/images/brand/genfinity-logo-uploaded.webp"
               alt="Genfinity O&P"
+              width={1100}
+              height={275}
               className="h-11 w-auto max-w-[190px] object-contain object-left brightness-0 invert"
             />
             <span>Tarzana, California</span>
@@ -58,9 +61,11 @@ export function Footer() {
           {/* Brand & Intro */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center gap-2">
-              <img
-                src="/images/brand/genfinity-logo.webp"
+              <Image
+                src="/images/brand/genfinity-logo-uploaded.webp"
                 alt="Genfinity O&P"
+                width={1100}
+                height={275}
                 className="h-12 w-auto max-w-[200px] object-contain object-left brightness-0 invert"
               />
             </Link>

@@ -476,6 +476,8 @@ export function PatientIntakeForm() {
   useEffect(() => {
     const localDraft = readLocalDraft();
     if (localDraft) {
+      // Restore the browser draft once during initial hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(localDraft.data);
       setStep(
         Math.max(0, Math.min(steps.length - 1, localDraft.currentStep)),

@@ -78,7 +78,7 @@ const clinicStructuredData = {
   telephone: "+1-888-552-6188",
   email: "support@genfinityoandp.com",
   image: `${SITE_URL}${DEFAULT_SOCIAL_IMAGE}`,
-  logo: `${SITE_URL}/images/brand/genfinity-logo.webp`,
+  logo: `${SITE_URL}/images/brand/genfinity-logo-uploaded.webp`,
   description:
     "Patient-first orthotic, prosthetic, and custom foot orthotic care in Tarzana, California.",
   address: {

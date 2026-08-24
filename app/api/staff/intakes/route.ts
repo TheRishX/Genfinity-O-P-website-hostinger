@@ -94,17 +94,72 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     const ids = [...new Set((intakes || []).map((item) => item.patient_id))];
-    const { data: patients, error: patientError } = ids.length
-      ? await supabase
-          .from("patients")
-          .select("id,ciphertext,iv,auth_tag")
-          .in("id", ids)
-      : { data: [] as any[], error: null };
+    const [
+      { data: patients, error: patientError },
+      { data: careProfiles },
+      { data: openOrders },
+      { data: upcomingVisits },
+    ] =
+      ids.length
+        ? await Promise.all([
+            supabase
+              .from("patients")
+              .select("id,ciphertext,iv,auth_tag")
+              .in("id", ids),
+            supabase
+              .from("patient_care_profiles")
+              .select("*")
+              .in("patient_id", ids),
+            supabase
+              .from("device_orders")
+              .select("id,patient_id,device_type,status,priority,promised_date")
+              .in("patient_id", ids)
+              .not("status", "in", '("delivered","cancelled")')
+              .order("created_at", { ascending: false }),
+            supabase
+              .from("patient_visits")
+              .select("id,patient_id,visit_type,status,scheduled_at")
+              .in("patient_id", ids)
+              .eq("status", "scheduled")
+              .gte("scheduled_at", new Date(Date.now() - 86_400_000).toISOString())
+              .order("scheduled_at", { ascending: true }),
+          ])
+        : [
+            { data: [], error: null },
+            { data: [] },
+            { data: [] },
+            { data: [] },
+          ];
     if (patientError) throw patientError;
     const byId = new Map(
       (patients || []).map((patient) => [patient.id, patient]),
     );
-    const records = (intakes || []).map((intake) => {
+    const careById = new Map(
+      (careProfiles || []).map((profile) => [profile.patient_id, profile]),
+    );
+    const orderByPatient = new Map<string, {
+      id: string;
+      patient_id: string;
+      device_type: string;
+      status: string;
+      priority: string;
+      promised_date: string | null;
+    }>();
+    for (const order of openOrders || [])
+      if (!orderByPatient.has(order.patient_id)) orderByPatient.set(order.patient_id, order);
+    const visitByPatient = new Map<string, {
+      id: string;
+      patient_id: string;
+      visit_type: string;
+      status: string;
+      scheduled_at: string;
+    }>();
+    for (const visit of upcomingVisits || [])
+      if (!visitByPatient.has(visit.patient_id)) visitByPatient.set(visit.patient_id, visit);
+    const seenPatients = new Set<string>();
+    const records = (intakes || []).flatMap((intake) => {
+      if (seenPatients.has(intake.patient_id)) return [];
+      seenPatients.add(intake.patient_id);
       const patient = byId.get(intake.patient_id);
       const profile = patient
         ? decryptJson<IntakeData["demographics"] & { ssnLastFour?: string }>({
@@ -113,8 +168,11 @@ export async function GET(request: NextRequest) {
             tag: patient.auth_tag,
           })
         : null;
-      return {
+      return [{
         ...intake,
+        care: careById.get(intake.patient_id) || null,
+        openOrder: orderByPatient.get(intake.patient_id) || null,
+        nextVisit: visitByPatient.get(intake.patient_id) || null,
         patient: profile
           ? {
               legalName: profile.legalName,
@@ -124,7 +182,7 @@ export async function GET(request: NextRequest) {
               state: profile.state,
             }
           : null,
-      };
+      }];
     });
     return NextResponse.json({ records });
   } catch (error) {
@@ -205,6 +263,12 @@ export async function POST(request: NextRequest) {
         .from("intake_search_tokens")
         .insert(tokens.map((token) => ({ patient_id: patientId, ...token }))),
       supabase.from("office_checklists").insert({ intake_id: intakeId }),
+      supabase.from("patient_care_profiles").insert({
+        patient_id: patientId,
+        stage: "new",
+        next_action: "Review new patient record",
+        next_action_at: new Date().toISOString(),
+      }),
       supabase.from("intake_audit_events").insert({
         intake_id: intakeId,
         actor_id: owner.id,

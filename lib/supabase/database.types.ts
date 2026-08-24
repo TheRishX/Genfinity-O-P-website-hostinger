@@ -388,6 +388,193 @@ export type Database = {
         }
         Relationships: []
       }
+      patient_care_profiles: {
+        Row: {
+          patient_id: string
+          stage: string
+          priority: string
+          next_action: string
+          next_action_at: string | null
+          email_updates_enabled: boolean
+          last_visit_at: string | null
+          next_visit_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          patient_id: string
+          stage?: string
+          priority?: string
+          next_action?: string
+          next_action_at?: string | null
+          email_updates_enabled?: boolean
+          last_visit_at?: string | null
+          next_visit_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          patient_id?: string
+          stage?: string
+          priority?: string
+          next_action?: string
+          next_action_at?: string | null
+          email_updates_enabled?: boolean
+          last_visit_at?: string | null
+          next_visit_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [{
+          foreignKeyName: "patient_care_profiles_patient_id_fkey"
+          columns: ["patient_id"]
+          isOneToOne: true
+          referencedRelation: "patients"
+          referencedColumns: ["id"]
+        }]
+      }
+      patient_visits: {
+        Row: {
+          id: string
+          patient_id: string
+          intake_id: string | null
+          visit_type: string
+          status: string
+          scheduled_at: string
+          completed_at: string | null
+          notes: string
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          patient_id: string
+          intake_id?: string | null
+          visit_type: string
+          status?: string
+          scheduled_at: string
+          completed_at?: string | null
+          notes?: string
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["patient_visits"]["Insert"]>
+        Relationships: []
+      }
+      device_orders: {
+        Row: {
+          id: string
+          patient_id: string
+          intake_id: string | null
+          device_type: string
+          description: string
+          status: string
+          priority: string
+          ordered_at: string
+          promised_date: string | null
+          delivered_at: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          patient_id: string
+          intake_id?: string | null
+          device_type: string
+          description?: string
+          status?: string
+          priority?: string
+          ordered_at?: string
+          promised_date?: string | null
+          delivered_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["device_orders"]["Insert"]>
+        Relationships: []
+      }
+      email_templates: {
+        Row: {
+          id: string
+          name: string
+          stage: string
+          subject: string
+          body: string
+          is_urgent: boolean
+          sort_order: number
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          stage: string
+          subject: string
+          body: string
+          is_urgent?: boolean
+          sort_order?: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["email_templates"]["Insert"]>
+        Relationships: []
+      }
+      patient_messages: {
+        Row: {
+          id: string
+          patient_id: string
+          template_id: string | null
+          subject: string
+          ciphertext: string
+          iv: string
+          auth_tag: string
+          delivery_status: string
+          error_message: string | null
+          sent_at: string | null
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          patient_id: string
+          template_id?: string | null
+          subject: string
+          ciphertext: string
+          iv: string
+          auth_tag: string
+          delivery_status?: string
+          error_message?: string | null
+          sent_at?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["patient_messages"]["Insert"]>
+        Relationships: []
+      }
+      staff_notification_settings: {
+        Row: {
+          user_id: string
+          automatic_urgent_updates: boolean
+          automatic_delivery_updates: boolean
+          appointment_reminders: boolean
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          automatic_urgent_updates?: boolean
+          automatic_delivery_updates?: boolean
+          appointment_reminders?: boolean
+          updated_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["staff_notification_settings"]["Insert"]>
+        Relationships: []
+      }
       staff_profiles: {
         Row: {
           created_at: string
