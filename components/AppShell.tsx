@@ -8,6 +8,9 @@ import { Navbar } from "@/components/Navbar";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isStaffRoute = pathname.startsWith("/staff");
+  const isOutstaticRoute = pathname.startsWith("/outstatic");
+
+  if (isOutstaticRoute) return <>{children}</>;
 
   return (
     <>
