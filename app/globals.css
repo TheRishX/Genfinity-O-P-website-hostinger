@@ -32,22 +32,22 @@ body:has(.staff-app-shell) {
   padding-bottom: 0;
 }
 
-/* WordPress article typography is deliberately scoped so CMS markup cannot
+/* Markdown article typography is deliberately scoped so CMS markup cannot
    leak into the rest of the Genfinity interface. */
-.wp-article-content {
+.markdown-article-content {
   min-width: 0;
   color: #334155;
   font-size: 1.075rem;
   line-height: 1.85;
 }
 
-.wp-article-content > :first-child {
+.markdown-article-content > :first-child {
   margin-top: 0;
 }
 
-.wp-article-content h2,
-.wp-article-content h3,
-.wp-article-content h4 {
+.markdown-article-content h2,
+.markdown-article-content h3,
+.markdown-article-content h4 {
   scroll-margin-top: 8rem;
   color: #020617;
   font-family: var(--font-outfit), sans-serif;
@@ -55,54 +55,54 @@ body:has(.staff-app-shell) {
   line-height: 1.2;
 }
 
-.wp-article-content h2 {
+.markdown-article-content h2 {
   margin: 2.8rem 0 1rem;
   font-size: clamp(1.75rem, 4vw, 2.25rem);
 }
 
-.wp-article-content h3 {
+.markdown-article-content h3 {
   margin: 2.2rem 0 0.8rem;
   font-size: clamp(1.4rem, 3vw, 1.75rem);
 }
 
-.wp-article-content h4 {
+.markdown-article-content h4 {
   margin: 1.8rem 0 0.7rem;
   font-size: 1.25rem;
 }
 
-.wp-article-content p,
-.wp-article-content ul,
-.wp-article-content ol,
-.wp-article-content blockquote,
-.wp-article-content figure,
-.wp-article-content table {
+.markdown-article-content p,
+.markdown-article-content ul,
+.markdown-article-content ol,
+.markdown-article-content blockquote,
+.markdown-article-content figure,
+.markdown-article-content table {
   margin: 1.25rem 0;
 }
 
-.wp-article-content ul,
-.wp-article-content ol {
+.markdown-article-content ul,
+.markdown-article-content ol {
   padding-left: 1.5rem;
 }
 
-.wp-article-content ul {
+.markdown-article-content ul {
   list-style: disc;
 }
 
-.wp-article-content ol {
+.markdown-article-content ol {
   list-style: decimal;
 }
 
-.wp-article-content li {
+.markdown-article-content li {
   margin: 0.55rem 0;
   padding-left: 0.25rem;
 }
 
-.wp-article-content li::marker {
+.markdown-article-content li::marker {
   color: #af201f;
   font-weight: 700;
 }
 
-.wp-article-content a {
+.markdown-article-content a {
   color: #af201f;
   font-weight: 650;
   text-decoration: underline;
@@ -110,16 +110,16 @@ body:has(.staff-app-shell) {
   text-underline-offset: 0.2em;
 }
 
-.wp-article-content a:hover {
+.markdown-article-content a:hover {
   text-decoration-color: #af201f;
 }
 
-.wp-article-content strong {
+.markdown-article-content strong {
   color: #020617;
   font-weight: 750;
 }
 
-.wp-article-content blockquote {
+.markdown-article-content blockquote {
   border-left: 4px solid #af201f;
   border-radius: 0 1rem 1rem 0;
   background: #f8fafc;
@@ -129,17 +129,17 @@ body:has(.staff-app-shell) {
   font-style: italic;
 }
 
-.wp-article-content figure,
-.wp-article-content img {
+.markdown-article-content figure,
+.markdown-article-content img {
   max-width: 100%;
 }
 
-.wp-article-content img {
+.markdown-article-content img {
   margin: 2rem auto;
   border-radius: 1rem;
 }
 
-.wp-article-content figcaption {
+.markdown-article-content figcaption {
   margin-top: -1.25rem;
   color: #64748b;
   font-size: 0.82rem;
@@ -147,7 +147,7 @@ body:has(.staff-app-shell) {
   text-align: center;
 }
 
-.wp-article-content table {
+.markdown-article-content table {
   display: block;
   max-width: 100%;
   overflow-x: auto;
@@ -155,20 +155,20 @@ body:has(.staff-app-shell) {
   font-size: 0.95rem;
 }
 
-.wp-article-content th,
-.wp-article-content td {
+.markdown-article-content th,
+.markdown-article-content td {
   border: 1px solid #e2e8f0;
   padding: 0.75rem;
   text-align: left;
 }
 
-.wp-article-content th {
+.markdown-article-content th {
   background: #f8fafc;
   color: #020617;
 }
 
 @media (max-width: 640px) {
-  .wp-article-content {
+  .markdown-article-content {
     font-size: 1rem;
     line-height: 1.78;
   }

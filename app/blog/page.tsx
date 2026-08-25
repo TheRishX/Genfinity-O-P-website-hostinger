@@ -11,7 +11,7 @@ import {
   getPlainTitle,
   getPosts,
   getReadingTime,
-} from "@/lib/wordpress";
+} from "@/lib/outstatic";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const PAGE_SIZE = 9;

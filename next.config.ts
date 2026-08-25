@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withOutstatic } from "outstatic/next-plugin";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -28,9 +29,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "slategrey-magpie-594089.hostingersite.com",
+        hostname: "raw.githubusercontent.com",
         port: "",
-        pathname: "/wp-content/uploads/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
@@ -69,4 +76,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withOutstatic(nextConfig);

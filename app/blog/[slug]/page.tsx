@@ -3,9 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Phone, UserRound } from "lucide-react";
-import { WordPressContent } from "@/components/blog/WordPressContent";
+import { MarkdownContent } from "@/components/blog/MarkdownContent";
 import {
-  decodeHtml,
   getAllPostSlugs,
   getAuthor,
   getCategories,
@@ -16,27 +15,15 @@ import {
   getPostBySlug,
   getPosts,
   getReadingTime,
-  rewriteSchemaUrls,
-  type YoastRobots,
-} from "@/lib/wordpress";
+} from "@/lib/outstatic";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from "@/lib/seo";
+import { remark } from "remark";
+import remarkHtml from "remark-html";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
 
 type PageProps = { params: Promise<{ slug: string }> };
-
-function directiveNumber(value: string | undefined, fallback: number) {
-  const parsed = Number(value?.split(":").at(-1));
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
-
-function imagePreview(robots: YoastRobots | undefined) {
-  const value = robots?.["max-image-preview"]?.split(":").at(-1);
-  return value === "none" || value === "standard" || value === "large"
-    ? value
-    : "large";
-}
 
 export async function generateStaticParams() {
   try {
@@ -60,55 +47,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   if (!post) return {};
 
-  const seo = post.yoast_head_json || {};
-  const title = decodeHtml(seo.title || getPlainTitle(post));
-  const description = decodeHtml(seo.description || getPlainExcerpt(post));
+  const title = getPlainTitle(post);
+  const description = getPlainExcerpt(post);
   const canonical = getFrontendPostUrl(post.slug);
   const featured = getFeaturedImage(post);
-  const ogImages = (seo.og_image?.length ? seo.og_image : featured ? [featured] : [])
+  const ogImages = (featured ? [featured] : [])
     .map((image) => ({
       url: image.url,
       ...(image.width ? { width: image.width } : {}),
       ...(image.height ? { height: image.height } : {}),
       alt: image.alt || featured?.alt || title,
     }));
-  const robots = seo.robots;
 
   return {
-    title: { absolute: title },
+    title: { absolute: `${title} | Genfinity O&P` },
     description,
     authors: [{ name: getAuthor(post) }],
     alternates: { canonical },
     robots: {
-      index: robots?.index !== "noindex",
-      follow: robots?.follow !== "nofollow",
-      googleBot: {
-        index: robots?.index !== "noindex",
-        follow: robots?.follow !== "nofollow",
-        "max-snippet": directiveNumber(robots?.["max-snippet"], -1),
-        "max-image-preview": imagePreview(robots),
-        "max-video-preview": directiveNumber(robots?.["max-video-preview"], -1),
-      },
+      index: true,
+      follow: true,
     },
     openGraph: {
       type: "article",
-      locale: seo.og_locale || "en_US",
-      siteName: decodeHtml(seo.og_site_name || SITE_NAME),
+      locale: "en_US",
+      siteName: SITE_NAME,
       url: canonical,
-      title: decodeHtml(seo.og_title || title),
-      description: decodeHtml(seo.og_description || description),
-      publishedTime: seo.article_published_time || post.date,
-      modifiedTime: seo.article_modified_time || post.modified,
+      title,
+      description,
+      publishedTime: post.date,
+      modifiedTime: post.modified,
       authors: [getAuthor(post)],
       images: ogImages.length ? ogImages : [{ url: DEFAULT_SOCIAL_IMAGE, alt: title }],
     },
     twitter: {
-      card: seo.twitter_card || "summary_large_image",
-      title: decodeHtml(seo.twitter_title || seo.og_title || title),
-      description: decodeHtml(seo.twitter_description || seo.og_description || description),
-      images: [seo.twitter_image || ogImages[0]?.url || DEFAULT_SOCIAL_IMAGE],
-      ...(seo.twitter_creator ? { creator: seo.twitter_creator } : {}),
-      ...(seo.twitter_site ? { site: seo.twitter_site } : {}),
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImages[0]?.url || DEFAULT_SOCIAL_IMAGE],
     },
   };
 }
@@ -132,9 +108,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const title = getPlainTitle(post);
   const featured = getFeaturedImage(post);
   const categories = getCategories(post);
-  const schema = post.yoast_head_json?.schema
-    ? rewriteSchemaUrls(post.yoast_head_json.schema, post.slug)
-    : null;
+  const contentHtml = await remark().use(remarkHtml).process(post.content);
   let relatedPosts: Awaited<ReturnType<typeof getPosts>>["posts"] = [];
   try {
     relatedPosts = (await getPosts(1, 4)).posts.filter((item) => item.id !== post.id).slice(0, 3);
@@ -144,18 +118,6 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main className="bg-white">
-      {schema !== null && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schema)
-              .replace(/</g, "\\u003c")
-              .replace(/\u2028/g, "\\u2028")
-              .replace(/\u2029/g, "\\u2029"),
-          }}
-        />
-      )}
-
       <article>
         <header className="relative overflow-hidden border-b border-slate-200 bg-slate-50">
           <div className="hero-grid pointer-events-none absolute inset-0 opacity-40" />
@@ -189,7 +151,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         )}
 
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,760px)_260px] lg:px-8 lg:py-16">
-          <WordPressContent html={post.content.rendered} />
+          <MarkdownContent html={String(contentHtml)} />
           <aside className="h-fit lg:sticky lg:top-32">
             <div className="rounded-3xl bg-brand-ink p-6 text-white shadow-xl">
               <p className="text-xs font-bold uppercase tracking-[.18em] text-red-300">Need a clearer answer?</p>
