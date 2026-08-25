@@ -24,15 +24,9 @@ export const dynamic = "force-static";
 const blogDescription =
   "Practical guidance about orthotics, prosthetics, foot pain, mobility, device care, and preparing for treatment from Genfinity O&P.";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}): Promise<Metadata> {
-  const params = await searchParams;
-  const page = Math.max(1, Number.parseInt(params.page || "1", 10) || 1);
-  const suffix = page > 1 ? ` – Page ${page}` : "";
-  const canonical = page > 1 ? `${SITE_URL}/blog?page=${page}` : `${SITE_URL}/blog`;
+export async function generateMetadata(): Promise<Metadata> {
+  const suffix = "";
+  const canonical = `${SITE_URL}/blog`;
   return {
     title: `Orthotics & Prosthetics Blog${suffix}`,
     description: blogDescription,
@@ -61,14 +55,8 @@ function pageHref(page: number) {
   return page <= 1 ? "/blog" : `/blog?page=${page}`;
 }
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const params = await searchParams;
-  const requestedPage = Number(params.page || "1");
-  const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+export default async function BlogPage() {
+  const page = 1;
 
   let result;
   try {
