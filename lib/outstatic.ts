@@ -4,7 +4,6 @@ import { cache } from "react";
 import {
   getDocumentBySlug,
   getDocumentSlugs,
-  getDocuments,
 } from "outstatic/server";
 import { SITE_URL } from "@/lib/seo";
 
@@ -69,7 +68,9 @@ function normalizePost(raw: RawPost): BlogPost {
 }
 
 function publishedPosts() {
-  return getDocuments("posts", [...POST_FIELDS])
+  return getDocumentSlugs("posts")
+    .map((slug) => getDocumentBySlug("posts", slug, [...POST_FIELDS]))
+    .filter((post): post is NonNullable<typeof post> => Boolean(post))
     .map((post) => normalizePost(post as unknown as RawPost))
     .filter((post) => post.status !== "draft");
 }
