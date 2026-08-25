@@ -16,7 +16,10 @@ import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const PAGE_SIZE = 9;
 
-export const revalidate = 3600;
+// Outstatic content is committed to GitHub and included during the Vercel build.
+// Keeping the index static ensures the serverless runtime does not need to read
+// the local content database after deployment.
+export const dynamic = "force-static";
 
 const blogDescription =
   "Practical guidance about orthotics, prosthetics, foot pain, mobility, device care, and preparing for treatment from Genfinity O&P.";
