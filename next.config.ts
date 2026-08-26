@@ -43,6 +43,20 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["motion"],
   turbopack: {},
+  async redirects() {
+    return [
+      {
+        source: "/contacts-us/",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/our-services/",
+        destination: "/services",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
