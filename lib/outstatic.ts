@@ -18,6 +18,14 @@ const POST_FIELDS = [
   "status",
   "category",
   "tags",
+  "focusKeyword",
+  "metaTitle",
+  "metaDescription",
+  "canonicalUrl",
+  "ogTitle",
+  "ogDescription",
+  "ogImage",
+  "noIndex",
 ] as const;
 
 export interface BlogPost {
@@ -32,6 +40,14 @@ export interface BlogPost {
   coverImage?: string;
   category?: string;
   tags?: Array<{ label: string; value: string }>;
+  focusKeyword?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  noIndex?: boolean;
   status?: "published" | "draft";
 }
 
@@ -63,6 +79,14 @@ function normalizePost(raw: RawPost): BlogPost {
     coverImage: raw.coverImage,
     category: raw.category,
     tags: raw.tags,
+    focusKeyword: raw.focusKeyword,
+    metaTitle: raw.metaTitle,
+    metaDescription: raw.metaDescription,
+    canonicalUrl: raw.canonicalUrl,
+    ogTitle: raw.ogTitle,
+    ogDescription: raw.ogDescription,
+    ogImage: raw.ogImage,
+    noIndex: raw.noIndex,
     status: raw.status,
   };
 }

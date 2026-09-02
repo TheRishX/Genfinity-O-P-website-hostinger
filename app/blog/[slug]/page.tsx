@@ -47,10 +47,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   if (!post) return {};
 
-  const title = getPlainTitle(post);
-  const description = getPlainExcerpt(post);
-  const canonical = getFrontendPostUrl(post.slug);
-  const featured = getFeaturedImage(post);
+  const title = post.metaTitle || getPlainTitle(post);
+  const description = post.metaDescription || getPlainExcerpt(post);
+  const canonical = post.canonicalUrl || getFrontendPostUrl(post.slug);
+  const featured = post.ogImage
+    ? { url: post.ogImage, alt: post.title, width: 1200, height: 630 }
+    : getFeaturedImage(post);
+  const socialTitle = post.ogTitle || title;
+  const socialDescription = post.ogDescription || description;
   const ogImages = (featured ? [featured] : [])
     .map((image) => ({
       url: image.url,
@@ -60,21 +64,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }));
 
   return {
-    title: { absolute: `${title} | Genfinity O&P` },
+    title: { absolute: title },
     description,
+    keywords: post.focusKeyword ? [post.focusKeyword] : undefined,
+    robots: {
+      index: !post.noIndex,
+      follow: !post.noIndex,
+    },
     authors: [{ name: getAuthor(post) }],
     alternates: { canonical },
-    robots: {
-      index: true,
-      follow: true,
-    },
     openGraph: {
       type: "article",
       locale: "en_US",
       siteName: SITE_NAME,
       url: canonical,
-      title,
-      description,
+      title: socialTitle,
+      description: socialDescription,
       publishedTime: post.date,
       modifiedTime: post.modified,
       authors: [getAuthor(post)],
@@ -82,8 +87,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: socialTitle,
+      description: socialDescription,
       images: [ogImages[0]?.url || DEFAULT_SOCIAL_IMAGE],
     },
   };

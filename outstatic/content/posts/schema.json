@@ -1,0 +1,54 @@
+{
+  "title": "Posts",
+  "type": "object",
+  "properties": {
+    "focusKeyword": {
+      "title": "Focus Keyword",
+      "fieldType": "String",
+      "dataType": "string",
+      "description": "Primary keyword for this article. Used for the keywords metadata field."
+    },
+    "metaTitle": {
+      "title": "Meta Title",
+      "fieldType": "String",
+      "dataType": "string",
+      "description": "Optional SEO title. Leave blank to use the article title."
+    },
+    "metaDescription": {
+      "title": "Meta Description",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Optional search snippet description. Leave blank to use the article description."
+    },
+    "canonicalUrl": {
+      "title": "Canonical URL",
+      "fieldType": "String",
+      "dataType": "string",
+      "description": "Optional full canonical URL. Leave blank to use the article URL."
+    },
+    "ogTitle": {
+      "title": "Open Graph Title",
+      "fieldType": "String",
+      "dataType": "string",
+      "description": "Optional title used when the article is shared on social platforms."
+    },
+    "ogDescription": {
+      "title": "Open Graph Description",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Optional social sharing description."
+    },
+    "ogImage": {
+      "title": "Open Graph Image",
+      "fieldType": "Image",
+      "dataType": "image",
+      "description": "Optional social sharing image. Falls back to the cover image."
+    },
+    "noIndex": {
+      "title": "No Index",
+      "fieldType": "Boolean",
+      "dataType": "boolean",
+      "description": "Prevent search engines from indexing this article."
+    }
+  }
+}
