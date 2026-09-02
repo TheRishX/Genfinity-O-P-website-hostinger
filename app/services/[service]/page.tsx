@@ -83,14 +83,12 @@ export function generateStaticParams() {
   return Object.keys(content).map((service) => ({ service }));
 }
 
-export default async function ServiceDetail({
-  params,
+export function ServiceDetailPage({
+  service,
 }: {
-  params: Promise<{ service: string }>;
+  service: keyof typeof content;
 }) {
-  const { service } = await params;
-  const page = content[service as keyof typeof content];
-  if (!page) notFound();
+  const page = content[service];
   return (
     <div className="bg-white">
       <section className="relative isolate overflow-hidden bg-slate-950 py-20 sm:py-28">
@@ -199,4 +197,14 @@ export default async function ServiceDetail({
       </section>
     </div>
   );
+}
+
+export default async function ServiceDetail({
+  params,
+}: {
+  params: Promise<{ service: string }>;
+}) {
+  const { service } = await params;
+  if (!(service in content)) notFound();
+  return <ServiceDetailPage service={service as keyof typeof content} />;
 }

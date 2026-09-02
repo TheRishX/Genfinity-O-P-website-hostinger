@@ -11,12 +11,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Genfinity O&P | Orthotics & Prosthetics in Tarzana, CA",
+    default: "Best Orthotics & Prosthetics Center in the USA",
     template: "%s | Genfinity O&P",
   },
   description:
-    "Personalized orthotics, prosthetics, and custom foot orthotics in Tarzana. Call Genfinity O&P at (888) 552-6188.",
-  alternates: { canonical: "/" },
+    "Get expert orthotics and prosthetics care in the USA, with personalized solutions, advanced technology, and support for better mobility and comfort.",
+  alternates: { canonical: "/orthotics-prosthetics/" },
   applicationName: "Genfinity O&P",
   authors: [{ name: "Genfinity O&P", url: SITE_URL }],
   creator: "Genfinity O&P",
@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   referrer: "origin-when-cross-origin",
   formatDetection: { email: false, address: false, telephone: false },
   keywords: [
+    "orthotics and prosthetics",
     "orthotics Tarzana",
     "prosthetics Tarzana",
     "custom foot orthotics Los Angeles",

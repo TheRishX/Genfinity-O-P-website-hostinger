@@ -6,12 +6,18 @@ export const DEFAULT_SOCIAL_IMAGE =
   "/images/genfinity/prosthetic-community.avif";
 
 export const seoPages = [
-  { path: "/", title: "Orthotics & Prosthetics in Tarzana, CA", description: "Personalized orthotic, prosthetic, and custom foot orthotic care in Tarzana, Los Angeles. More than 25 years of clinical experience. Call (888) 552-6188.", priority: 1, changeFrequency: "weekly" },
-  { path: "/about", title: "About Our Orthotic & Prosthetic Clinic", description: "Meet Genfinity O&P, a patient-first orthotic and prosthetic clinic in Tarzana combining clinical precision, careful fitting, and long-term support.", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/services", title: "Orthotic, Prosthetic & Custom Insole Services", description: "Explore custom orthotics, advanced prosthetics, diabetic footwear, pediatric bracing, and custom foot orthotics in Tarzana, CA.", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/services/orthotics", title: "Custom Orthotics & Bracing in Tarzana", description: "Custom and custom-fit AFOs, KAFOs, spinal braces, upper-extremity orthoses, pediatric orthotics, and diabetic footwear in Tarzana.", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/services/prosthetics", title: "Personalized Prosthetic Care in Tarzana", description: "Below-knee, above-knee, upper-extremity, myoelectric, microprocessor, and activity-specific prosthetic care built around your life.", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/services/custom-insoles", title: "Custom Foot Orthotics & Insoles in Tarzana", description: "Custom insoles and foot orthotics for plantar fasciitis, flat feet, diabetic care, sports, work footwear, and pressure relief.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/", keyword: "orthotics and prosthetics", title: "Best Orthotics & Prosthetics Center in the USA", description: "Get expert orthotics and prosthetics care in the USA, with personalized solutions, advanced technology, and support for better mobility and comfort.", priority: 1, changeFrequency: "weekly" },
+  { path: "/orthotics-prosthetics/", keyword: "orthotics and prosthetics", title: "Best Orthotics & Prosthetics Center in the USA", description: "Get expert orthotics and prosthetics care in the USA, with personalized solutions, advanced technology, and support for better mobility and comfort.", priority: 1, changeFrequency: "weekly" },
+  { path: "/about", keyword: "Orthotics & Prosthetics Center", title: "About Our Orthotics & Prosthetics Center", description: "Orthotics and prosthetics center USA provider Genfinity O&P offers expert care for comfort, mobility, and improved quality of life.", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/about/", keyword: "Orthotics & Prosthetics Center", title: "About Our Orthotics & Prosthetics Center", description: "Orthotics and prosthetics center USA provider Genfinity O&P offers expert care for comfort, mobility, and improved quality of life.", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/services", keyword: "custom orthotics and prosthetics", title: "Best Custom Orthotics and Prosthetics USA | Pain Relief & Support", description: "Custom orthotics & prosthetics by trusted USA experts. Personalized braces, foot orthotics & prosthetic limbs for comfort & mobility.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/our-services-custom-orthotics-and-prosthetics/", keyword: "custom orthotics and prosthetics", title: "Best Custom Orthotics and Prosthetics USA | Pain Relief & Support", description: "Custom orthotics & prosthetics by trusted USA experts. Personalized braces, foot orthotics & prosthetic limbs for comfort & mobility.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/services/orthotics", keyword: "Custom Orthotics", title: "Best Custom Orthotics | Expert Foot Support", description: "Find the best custom orthotics for better foot support, comfort, alignment, and mobility with personalized solutions from orthotics experts.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/custom-orthotics/", keyword: "Custom Orthotics", title: "Best Custom Orthotics | Expert Foot Support", description: "Find the best custom orthotics for better foot support, comfort, alignment, and mobility with personalized solutions from orthotics experts.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/services/prosthetics", keyword: "Prosthetics & Orthotics", title: "Best Prosthetics & Orthotics | Expert Care", description: "Find the best Prosthetics & Orthotics care for improved mobility, comfort, and support with personalized solutions from experienced experts.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/prosthetics-orthotics/", keyword: "Prosthetics & Orthotics", title: "Best Prosthetics & Orthotics | Expert Care", description: "Find the best Prosthetics & Orthotics care for improved mobility, comfort, and support with personalized solutions from experienced experts.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/services/custom-insoles", keyword: "Custom Foot Orthotics", title: "Custom Foot Orthotics | Better Foot Support", description: "Custom Foot Orthotics provide personalized support to improve comfort, alignment, mobility, and everyday performance based on your unique foot needs.", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/custom-foot-orthotics/", keyword: "Custom Foot Orthotics", title: "Custom Foot Orthotics | Better Foot Support", description: "Custom Foot Orthotics provide personalized support to improve comfort, alignment, mobility, and everyday performance based on your unique foot needs.", priority: 0.9, changeFrequency: "monthly" },
   { path: "/patient-resources", title: "Patient Resources", description: "Prepare for orthotic or prosthetic care with guidance on appointments, insurance, financial assistance, the fitting process, and common questions.", priority: 0.7, changeFrequency: "monthly" },
   { path: "/what-to-expect", title: "What to Expect at Your First Visit", description: "Learn what happens during an orthotic or prosthetic evaluation, what to bring, and how Genfinity O&P plans care around your goals.", priority: 0.7, changeFrequency: "monthly" },
   { path: "/the-process", title: "Our Orthotic & Prosthetic Care Process", description: "Understand evaluation, measurement, fabrication, fitting, delivery, and follow-up for custom orthotic and prosthetic devices.", priority: 0.7, changeFrequency: "monthly" },
@@ -33,8 +39,9 @@ export function pageMetadata(path: SeoPath): Metadata {
   const url = new URL(path, SITE_URL).toString();
 
   return {
-    title: page.title,
+    title: { absolute: page.title },
     description: page.description,
+    keywords: "keyword" in page ? [page.keyword] : undefined,
     alternates: { canonical: path },
     openGraph: {
       type: "website",
