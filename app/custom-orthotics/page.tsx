@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ServiceDetailPage } from "@/app/services/[service]/page";
+import { ServiceDetailPage } from "@/components/ServiceDetailPage";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata("/custom-orthotics/");
