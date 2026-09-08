@@ -136,6 +136,10 @@ export default function ContactPage() {
                       <label className="text-sm font-semibold text-brand-ink">Email<input name="email" required type="email" autoComplete="email" maxLength={254} className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
                     </div>
                     <label className="block text-sm font-semibold text-brand-ink">How can we help?<textarea name="message" required rows={5} maxLength={3000} placeholder="For example: foot pain, a brace that no longer fits, a prosthetic evaluation, or help with a referral." className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
+                    <label className="flex items-start gap-3 text-sm leading-relaxed text-slate-600">
+                      <input name="smsConsent" value="yes" type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-brand-red" />
+                      <span>By checking this box, I consent to receive DELIVERY NOTIFICATIONS SMS from Genfinity O&amp;P LLC. Reply STOP to opt-out; Reply HELP for support; Message &amp; data rates may apply; Messaging frequency may vary. Visit <a className="font-semibold text-brand-red hover:underline" href="https://genfinityoandp.com/privacy">https://genfinityoandp.com/privacy</a> to see our privacy policy and <a className="font-semibold text-brand-red hover:underline" href="https://genfinityoandp.com/terms">https://genfinityoandp.com/terms</a> for our Terms of Service.</span>
+                    </label>
                     <div className="absolute -left-[10000px]" aria-hidden="true"><label>Leave empty<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
                     <p className="text-xs leading-relaxed text-slate-500">Please do not send emergency concerns or highly sensitive medical information here. Call 911 for emergencies.</p>
                     {error && <p role="alert" className="text-sm font-semibold text-brand-red">{error} Call (888) 552-6188 for immediate help.</p>}

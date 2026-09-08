@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const phone = clean(payload.phone, 40);
     const email = clean(payload.email, 254).toLowerCase();
     const message = clean(payload.message, 3000);
+    const smsConsent = payload.smsConsent === "yes";
     const website = clean(payload.website, 200);
 
     // Bots commonly fill this field; people never see it.
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
         `Name: ${fullName}`,
         `Phone: ${phone}`,
         `Email: ${email}`,
+        `SMS consent: ${smsConsent ? "Yes" : "No"}`,
         "",
         "What they would like help with:",
         message,
@@ -79,6 +81,7 @@ export async function POST(request: Request) {
           <table style="border-collapse:collapse;width:100%;margin-bottom:24px">
             <tr><td style="padding:8px 12px;background:#f6f7f8;font-weight:700">Phone</td><td style="padding:8px 12px">${escapeHtml(phone)}</td></tr>
             <tr><td style="padding:8px 12px;background:#f6f7f8;font-weight:700">Email</td><td style="padding:8px 12px">${escapeHtml(email)}</td></tr>
+            <tr><td style="padding:8px 12px;background:#f6f7f8;font-weight:700">SMS consent</td><td style="padding:8px 12px">${smsConsent ? "Yes" : "No"}</td></tr>
           </table>
           <h2 style="font-size:17px">What they would like help with</h2>
           <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
