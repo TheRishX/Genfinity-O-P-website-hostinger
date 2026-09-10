@@ -17,13 +17,6 @@ export function OutstaticLightTheme() {
     };
 
     forceLight();
-    const observer = new MutationObserver(forceLight);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   return null;
