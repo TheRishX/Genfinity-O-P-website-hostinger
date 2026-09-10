@@ -132,7 +132,7 @@ export default function ContactPage() {
                       <label className="text-sm font-semibold text-brand-ink">Last name<input name="last" required autoComplete="family-name" maxLength={80} className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <label className="text-sm font-semibold text-brand-ink">Best phone number<input name="phone" required type="tel" autoComplete="tel" maxLength={40} className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
+                      <label className="text-sm font-semibold text-brand-ink">Phone number<input name="phone" required type="tel" autoComplete="tel" maxLength={40} className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
                       <label className="text-sm font-semibold text-brand-ink">Email<input name="email" required type="email" autoComplete="email" maxLength={254} className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
                     </div>
                     <label className="block text-sm font-semibold text-brand-ink">How can we help?<textarea name="message" required rows={5} maxLength={3000} placeholder="For example: foot pain, a brace that no longer fits, a prosthetic evaluation, or help with a referral." className="mt-2 w-full rounded-xl border border-slate-200 p-3 font-normal outline-none focus:border-brand-red" /></label>
