@@ -3,7 +3,7 @@ import { Outfit, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
-import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from "@/lib/seo";
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from "@/app/seo";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });

@@ -12,7 +12,7 @@ import {
   getPosts,
   getReadingTime,
 } from "@/lib/outstatic";
-import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/app/seo";
 
 const PAGE_SIZE = 9;
 

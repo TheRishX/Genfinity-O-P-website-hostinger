@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -12,9 +13,6 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { SkeletonImage } from "@/components/SkeletonImage";
-import { ServiceExploreCard } from "@/components/ServiceExploreCard";
-import { MobileHome } from "@/components/MobileHome";
 const heroImage = "/images/genfinity/hero-mobility.webp";
 const orthoticsImage = "/images/genfinity/orthotic-clinical-care.avif";
 const prostheticsCardImage = "/images/genfinity/prosthetic-lifestyle.avif";
@@ -62,8 +60,7 @@ const carePaths = [
 export default function Home() {
   return (
     <div className="overflow-hidden bg-white">
-      <MobileHome />
-      <div className="hidden lg:block">
+      <div>
         <section className="relative isolate bg-white pb-16 pt-10 sm:pb-24 lg:pb-32 lg:pt-20">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_20%,rgba(18,90,88,.13),transparent_27%),radial-gradient(circle_at_90%_78%,rgba(18,90,88,.08),transparent_24%)]" />
           <div className="hero-grid absolute inset-0 -z-10 opacity-70" />
@@ -122,7 +119,7 @@ export default function Home() {
               <div className="hero-orbit hero-orbit--one pointer-events-none absolute -left-7 -top-7 h-28 w-28 rounded-full border border-brand-red/40" />
               <div className="hero-orbit hero-orbit--two pointer-events-none absolute -bottom-8 -right-7 h-44 w-44 rounded-full border border-brand-blue/35" />
               <div className="relative aspect-[4/4.4] overflow-hidden rounded-[2rem] border border-white/70 bg-brand-blue shadow-2xl shadow-brand-blue/20">
-                <SkeletonImage
+                <Image
                   src={heroImage}
                   alt="A patient with a prosthetic leg walking confidently with a clinician"
                   fill
@@ -212,24 +209,17 @@ export default function Home() {
             </div>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {carePaths.map((path, index) => (
-                <ServiceExploreCard
-                  key={path.title}
-                  index={index}
-                  title={path.title}
-                  description={path.text}
-                  href={path.href}
-                  image={path.image}
-                  treatments={path.treatments}
-                  icon={
-                    index === 0 ? (
-                      <ScanLine className="w-6" />
-                    ) : index === 1 ? (
-                      <Sparkles className="w-6" />
-                    ) : (
-                      <HeartPulse className="w-6" />
-                    )
-                  }
-                />
+                <article key={path.title} className="group overflow-hidden rounded-3xl border border-brand-blue/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                  <Image src={path.image} alt={path.title} width={900} height={600} className="h-52 w-full object-cover" />
+                  <div className="p-7">
+                    <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-blue text-white">
+                      {index === 0 ? <ScanLine className="w-6" /> : index === 1 ? <Sparkles className="w-6" /> : <HeartPulse className="w-6" />}
+                    </div>
+                    <h3 className="mt-5 text-2xl font-bold text-brand-ink">{path.title}</h3>
+                    <p className="mt-3 leading-relaxed text-slate-600">{path.text}</p>
+                    <Link href={path.href} className="mt-6 inline-flex items-center gap-2 font-bold text-brand-blue">Explore care <ArrowRight className="w-4" /></Link>
+                  </div>
+                </article>
               ))}
             </div>
           </div>

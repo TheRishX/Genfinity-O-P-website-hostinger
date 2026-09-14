@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Home from "@/app/page";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata } from "@/app/seo";
 
 export const metadata: Metadata = pageMetadata("/orthotics-prosthetics/");
 

@@ -16,7 +16,7 @@ import {
   getPosts,
   getReadingTime,
 } from "@/lib/outstatic";
-import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from "@/lib/seo";
+import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from "@/app/seo";
 import { remark } from "remark";
 import remarkHtml from "remark-html";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { ArrowRight, CheckCircle2, HeartPulse, Activity } from "lucide-react";
-import { SkeletonImage } from "@/components/SkeletonImage";
 const orthoticsImage = "/images/genfinity/orthotic-clinical-care.avif";
 const prostheticsImage = "/images/genfinity/prosthetic-hiking.avif";
 const insolesImage = "/images/genfinity/orthotic-shoe-fitting.avif";
@@ -137,7 +137,7 @@ export default function ServicesPage() {
               </div>
               <div className="lg:w-1/2 w-full">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-100">
-                  <SkeletonImage
+                  <Image
                     src={service.image}
                     alt={service.title}
                     fill

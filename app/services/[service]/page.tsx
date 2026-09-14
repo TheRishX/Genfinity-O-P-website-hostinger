@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ service: 
   const { service } = await params;
   const path = serviceSeo[service as keyof typeof serviceSeo];
   if (!path) return {};
-  const { pageMetadata } = await import("@/lib/seo");
+  const { pageMetadata } = await import("@/app/seo");
   const labels = { orthotics: "Custom orthotic care", prosthetics: "Personalized prosthetic care", "custom-insoles": "Custom foot orthotics" };
   return { ...pageMetadata(path), title: { absolute: `${labels[service as ServiceKey]} | Genfinity O&P` } };
 }

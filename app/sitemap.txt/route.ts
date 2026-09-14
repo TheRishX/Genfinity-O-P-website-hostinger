@@ -1,4 +1,4 @@
-import { SITE_URL, seoPages } from "@/lib/seo";
+import { SITE_URL, seoPages } from "@/app/seo";
 
 export function GET() {
   const body = seoPages
