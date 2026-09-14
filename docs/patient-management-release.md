@@ -7,22 +7,16 @@ preferences around those records.
 
 ## 1. Apply the database migration
 
-The repository must be linked to the intended Supabase project by an authorized
-operator. This machine does not currently have a linked project or database
-password, so the migration was intentionally not pushed from the development
-session.
+The Hostinger MySQL schema must be installed by an authorized operator before
+the application is enabled. Run `mysql` with the contents of
+`scripts/hostinger-schema.sql` against the Hostinger database.
 
 ```bash
-npx supabase@latest link --project-ref YOUR_PROJECT_REF
-npx supabase@latest db push --dry-run --linked
-npx supabase@latest db push --linked
-npx supabase@latest migration list
+mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p "$MYSQL_DATABASE" < scripts/hostinger-schema.sql
 ```
 
-Review and apply
-`supabase/migrations/20260821054531_patient_care_management.sql`. It enables RLS,
-grants only authenticated owner access, adds indexes for the dashboard queries,
-backfills every old patient, and installs the default stage-based email templates.
+The Hostinger schema preserves the application encryption boundary and gives the
+owner session layer access only through server-side routes.
 
 ## 2. Configure patient email safely
 
@@ -44,8 +38,8 @@ of automatic care emails per record.
 - Confirm a failed delivery is visible in message history and does not roll back
   the care-status change.
 - Test the staff workspace at 320px, tablet, and desktop widths.
-- Confirm production backups, point-in-time recovery, audit retention, and staff
-  offboarding procedures with the Supabase project owner.
+- Confirm Hostinger backups, audit retention, and staff offboarding procedures
+  with the site owner.
 - Run `npm run lint`, `npx tsc --noEmit`, and `npm run build` before deployment.
 
 ## 4. Safe release order
@@ -55,4 +49,3 @@ of automatic care emails per record.
 3. Deploy the application.
 4. Complete the test-patient smoke test.
 5. Enable `CARE_EMAILS_ENABLED` only after email delivery is approved.
-

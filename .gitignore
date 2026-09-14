@@ -9,3 +9,5 @@ coverage/
 !.env.example
 .vercel
 supabase/.temp/
+.private-storage/
+.migration-export/

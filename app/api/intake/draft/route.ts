@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/mysql/admin";
 import { decryptJson, encryptJson, hashSecret } from "@/lib/intake/crypto";
 import { defaultIntakeData, type IntakeData } from "@/lib/intake/schema";
 import {
@@ -22,7 +22,7 @@ const cookieOptions = {
 async function readDraft(request: NextRequest) {
   const id = request.cookies.get("genfinity_intake_id")?.value;
   const secret = request.cookies.get("genfinity_intake_secret")?.value;
-  if (!id || !secret || !isSupabaseConfigured() || !intakeLiveReady())
+  if (!id || !secret || !isDatabaseConfigured() || !intakeLiveReady())
     return null;
   const { data } = await createAdminClient()
     .from("intake_drafts")
@@ -48,7 +48,7 @@ async function readDraft(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const limited = rateLimit(request, 60);
   if (limited) return limited;
-  if (!isSupabaseConfigured() || !intakeLiveReady())
+  if (!isDatabaseConfigured() || !intakeLiveReady())
     return NextResponse.json({
       configured: false,
       hasDraft: false,
@@ -74,7 +74,7 @@ export async function PUT(request: NextRequest) {
     );
   const limited = rateLimit(request, 35);
   if (limited) return limited;
-  if (!isSupabaseConfigured() || !intakeLiveReady())
+  if (!isDatabaseConfigured() || !intakeLiveReady())
     return NextResponse.json({ configured: false, saved: false });
   const contentLength = Number(request.headers.get("content-length") || 0);
   if (contentLength > 250_000)

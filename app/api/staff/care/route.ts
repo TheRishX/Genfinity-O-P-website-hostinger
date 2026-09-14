@@ -4,7 +4,7 @@ import { sendBrevoEmail, isBrevoConfigured } from "@/lib/email/brevo";
 import { decryptJson, encryptJson } from "@/lib/intake/crypto";
 import type { IntakeData } from "@/lib/intake/schema";
 import { requireOwner, requireSameOrigin } from "@/lib/intake/security";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createServerDatabase as createServerSupabase } from "@/lib/mysql/client";
 
 export const runtime = "nodejs";
 

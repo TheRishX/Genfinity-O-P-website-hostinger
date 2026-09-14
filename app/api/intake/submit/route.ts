@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { sendBrevoEmail } from "@/lib/email/brevo";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/mysql/admin";
 import {
   blindToken,
   buildSearchTokens,
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     );
   const limited = rateLimit(request, 5, 10 * 60_000);
   if (limited) return limited;
-  if (!isSupabaseConfigured())
+  if (!isDatabaseConfigured())
     return NextResponse.json(
       { error: "Secure intake storage is not configured yet." },
       { status: 503 },

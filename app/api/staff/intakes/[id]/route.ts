@@ -8,7 +8,7 @@ import {
 } from "@/lib/intake/crypto";
 import type { IntakeData } from "@/lib/intake/schema";
 import { requireOwner, requireSameOrigin } from "@/lib/intake/security";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createServerDatabaseWithStorage as createServerSupabase } from "@/lib/mysql/server";
 
 export const runtime = "nodejs";
 

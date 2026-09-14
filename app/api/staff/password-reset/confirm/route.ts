@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createDatabaseClient } from "@/lib/mysql/client";
+import { hashPassword } from "@/lib/auth";
 import {
   rateLimit,
   requireSameOrigin,
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
 
-  const admin = createAdminClient();
+  const admin = createDatabaseClient();
   const tokenHash = createHash("sha256").update(token).digest("hex");
   const claimed = await admin
     .from("owner_password_resets")
@@ -48,10 +49,7 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
 
-  const updated = await admin.auth.admin.updateUserById(claimed.data.user_id, {
-    password,
-    email_confirm: true,
-  });
+  const updated = await admin.from("staff_users").update({ password_hash: await hashPassword(password), password_reset_required: false, updated_at: new Date().toISOString() }).eq("id", claimed.data.user_id);
   if (updated.error) {
     await admin
       .from("owner_password_resets")

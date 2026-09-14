@@ -9,9 +9,9 @@ export const dynamic = "force-dynamic";
 
 export default function StaffLoginPage() {
   const configured = Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) &&
+    process.env.MYSQL_DATABASE &&
+    process.env.MYSQL_USER &&
+    process.env.MYSQL_PASSWORD &&
     process.env.OWNER_EMAIL,
   );
   return (

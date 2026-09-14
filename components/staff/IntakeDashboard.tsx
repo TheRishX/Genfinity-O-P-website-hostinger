@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabase } from "@/lib/supabase/browser";
 import {
   AlertCircle, ArrowLeft, CalendarDays, Check, ChevronRight, CircleAlert,
   Download, LayoutDashboard, Loader2, LogOut, Mail, PackageCheck, Plus, Search,
@@ -136,7 +135,7 @@ export function IntakeDashboard() {
   }
 
   async function signOut() {
-    await createBrowserSupabase().auth.signOut();
+    await fetch("/api/staff/logout", { method: "POST" });
     router.replace("/staff/login");
     router.refresh();
   }

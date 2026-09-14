@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { sendBrevoEmail } from "@/lib/email/brevo";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createDatabaseClient } from "@/lib/mysql/client";
 import {
   rateLimit,
   requireSameOrigin,
@@ -26,20 +26,15 @@ export async function POST(request: NextRequest) {
   if (!ownerEmail || email !== ownerEmail)
     return NextResponse.json(genericResponse);
 
-  const admin = createAdminClient();
-  const users = await admin.auth.admin.listUsers({ page: 1, perPage: 100 });
-  if (users.error)
-    return NextResponse.json({ error: "Unable to start password recovery" }, { status: 500 });
-  const owner = users.data.users.find(
-    (user) => user.email?.toLowerCase() === ownerEmail,
-  );
-  if (!owner) return NextResponse.json(genericResponse);
+  const admin = createDatabaseClient();
+  const owner = await admin.from("staff_users").select("id,email").eq("email", ownerEmail).maybeSingle();
+  if (owner.error || !owner.data) return NextResponse.json(genericResponse);
 
   const now = new Date();
   const active = await admin
     .from("owner_password_resets")
     .select("created_at")
-    .eq("user_id", owner.id)
+    .eq("user_id", owner.data.id)
     .is("used_at", null)
     .gt("expires_at", now.toISOString())
     .order("created_at", { ascending: false })
@@ -47,12 +42,12 @@ export async function POST(request: NextRequest) {
     .maybeSingle();
   if (
     active.data &&
-    Date.now() - new Date(active.data.created_at).getTime() < 60_000
+    Date.now() - new Date(String(active.data.created_at)).getTime() < 60_000
   )
     return NextResponse.json(genericResponse);
 
   await Promise.all([
-    admin.from("owner_password_resets").delete().eq("user_id", owner.id),
+    admin.from("owner_password_resets").delete().eq("user_id", owner.data.id),
     admin
       .from("owner_password_resets")
       .delete()
@@ -64,7 +59,7 @@ export async function POST(request: NextRequest) {
   const expiresAt = new Date(Date.now() + 20 * 60_000).toISOString();
   const inserted = await admin.from("owner_password_resets").insert({
     token_hash: tokenHash,
-    user_id: owner.id,
+    user_id: owner.data.id,
     expires_at: expiresAt,
   });
   if (inserted.error)

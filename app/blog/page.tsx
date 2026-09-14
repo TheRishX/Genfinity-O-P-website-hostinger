@@ -16,8 +16,8 @@ import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const PAGE_SIZE = 9;
 
-// Outstatic content is committed to GitHub and included during the Vercel build.
-// Keeping the index static ensures the serverless runtime does not need to read
+// Outstatic content is committed to GitHub and included during the Hostinger build.
+// Keeping the index static avoids reading the local content database per request
 // the local content database after deployment.
 export const dynamic = "force-static";
 

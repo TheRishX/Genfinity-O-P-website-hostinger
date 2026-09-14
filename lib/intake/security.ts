@@ -1,6 +1,6 @@
 import "server-only";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { getCurrentOwner } from "@/lib/auth";
 
 const hits = new Map<string, { count: number; resetAt: number }>();
 
@@ -11,7 +11,7 @@ export function intakeMode() {
 export function intakeLiveReady() {
   return Boolean(
     intakeMode() === "live" &&
-      process.env.SUPABASE_HIPAA_READY === "true" &&
+      process.env.HOSTINGER_PHI_APPROVED === "true" &&
       process.env.INTAKE_ENCRYPTION_KEY &&
       process.env.INTAKE_SEARCH_KEY &&
       process.env.NPP_VERSION &&
@@ -45,15 +45,5 @@ export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
 }
 
 export async function requireOwner() {
-  const supabase = await createServerSupabase();
-  const { data, error } = await supabase.auth.getClaims();
-  const claims = data?.claims;
-  if (
-    error ||
-    !claims?.sub ||
-    String(claims.email || "").toLowerCase() !==
-      process.env.OWNER_EMAIL?.toLowerCase()
-  )
-    return null;
-  return { id: claims.sub, email: String(claims.email) };
+  return getCurrentOwner();
 }

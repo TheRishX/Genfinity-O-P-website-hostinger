@@ -4,7 +4,6 @@ import { FormEvent, useState } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabase } from "@/lib/supabase/browser";
 
 export function StaffLogin({ configured }: { configured: boolean }) {
   const router = useRouter();
@@ -20,11 +19,9 @@ export function StaffLogin({ configured }: { configured: boolean }) {
     setError("");
     setNotice("");
     try {
-      const result = await createBrowserSupabase().auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (result.error) throw result.error;
+      const response = await fetch("/api/staff/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to sign in");
       router.push("/staff/intakes");
       router.refresh();
     } catch (error) {
@@ -65,7 +62,7 @@ export function StaffLogin({ configured }: { configured: boolean }) {
       <div className="rounded-3xl border border-amber-200 bg-amber-50 p-8 text-amber-950">
         <h1 className="text-2xl font-bold">Owner portal is not configured</h1>
         <p className="mt-3 leading-relaxed">
-          Add the Supabase URL, anonymous key, service-role key, and owner email
+          Configure the Hostinger MySQL database and owner email before signing in.
           to the server environment before signing in.
         </p>
       </div>

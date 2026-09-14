@@ -3,7 +3,7 @@ import { decryptJson } from "@/lib/intake/crypto";
 import { buildIntakePdf } from "@/lib/intake/pdf";
 import type { IntakeData } from "@/lib/intake/schema";
 import { requireOwner } from "@/lib/intake/security";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createServerDatabaseWithStorage as createServerSupabase } from "@/lib/mysql/server";
 
 export const runtime = "nodejs";
 
@@ -32,8 +32,7 @@ export async function GET(
     const download = await supabase.storage
       .from("intake-signatures")
       .download(signature.storage_path);
-    if (download.data)
-      signatureBytes = new Uint8Array(await download.data.arrayBuffer());
+    if (download.data) signatureBytes = new Uint8Array(download.data);
   }
   const data = decryptJson<IntakeData>({
     ciphertext: intake.ciphertext,
