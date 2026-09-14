@@ -189,3 +189,5 @@ export const privateStorage = {
   async download(relative: string) { return readFile(/* turbopackIgnore: true */ storageFile(relative)); },
   async remove(relative: string) { await rm(storageFile(relative), { force: true }); },
 };
+
+// Hostinger deployment source marker.

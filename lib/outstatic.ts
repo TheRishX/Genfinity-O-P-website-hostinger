@@ -159,3 +159,5 @@ export function getReadingTime(post: BlogPost) {
 export function getFrontendPostUrl(slug: string) {
   return `${SITE_URL}/blog/${slug}`;
 }
+
+// Hostinger deployment source marker.

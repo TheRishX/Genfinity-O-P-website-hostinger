@@ -57,3 +57,5 @@ export async function getCurrentOwner(): Promise<Owner | null> {
 }
 
 export { SESSION_COOKIE };
+
+// Hostinger deployment source marker.

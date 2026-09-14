@@ -33,3 +33,5 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </>
   );
 }
+
+// Hostinger deployment source marker.

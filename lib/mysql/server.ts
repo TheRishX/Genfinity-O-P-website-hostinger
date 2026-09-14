@@ -13,3 +13,5 @@ export function createServerDatabaseWithStorage() {
     },
   };
 }
+
+// Hostinger deployment source marker.

@@ -47,3 +47,5 @@ export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
 export async function requireOwner() {
   return getCurrentOwner();
 }
+
+// Hostinger deployment source marker.

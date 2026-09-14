@@ -26,3 +26,5 @@ I authorize clinically necessary photographs, measurements, scans, casts, impres
 } as const;
 
 export type ConsentKey = keyof typeof CONSENTS;
+
+// Hostinger deployment source marker.

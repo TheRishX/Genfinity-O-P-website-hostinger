@@ -284,3 +284,5 @@ export function MobileHome() {
     </div>
   );
 }
+
+// Hostinger deployment source marker.

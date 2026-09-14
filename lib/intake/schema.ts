@@ -321,3 +321,5 @@ export const stepSchemas = [
   z.object({ privacy: intakeObject.shape.privacy }),
   intakeSchema,
 ];
+
+// Hostinger deployment source marker.

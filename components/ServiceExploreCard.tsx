@@ -38,3 +38,5 @@ export function ServiceExploreCard({ index, title, description, href, treatments
     </div>
   </motion.article>;
 }
+
+// Hostinger deployment source marker.

@@ -731,3 +731,5 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// Hostinger deployment source marker.

@@ -13,3 +13,5 @@ export const storage = {
 };
 
 export function createAdminClient() { return { ...createDatabaseClient(), storage }; }
+
+// Hostinger deployment source marker.

@@ -141,3 +141,5 @@ export function StaffLogin({ configured }: { configured: boolean }) {
     </div>
   );
 }
+
+// Hostinger deployment source marker.

@@ -17,3 +17,5 @@ export function ServiceDetailPage({ service }: { service: ServiceKey }) {
     <section className="bg-brand-blue py-16"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-7 px-4 sm:px-6 md:flex-row md:items-center lg:px-8"><div className="flex gap-4"><ShieldCheck className="mt-1 w-7 shrink-0 text-red-200" /><div><h2 className="text-2xl font-bold text-white">Let&apos;s find the right next step.</h2><p className="mt-1 text-blue-100">Speak directly with the Genfinity O&amp;P team.</p></div></div><a href="tel:8885526188" className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-bold text-brand-blue hover:bg-slate-100"><Sparkles className="h-4 w-4" /> Call now</a></div></section>
   </div>;
 }
+
+// Hostinger deployment source marker.

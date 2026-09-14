@@ -27,3 +27,5 @@ export function MobileCallBar() {
     </motion.div>
   );
 }
+
+// Hostinger deployment source marker.

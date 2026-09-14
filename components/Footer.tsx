@@ -192,3 +192,5 @@ export function Footer() {
     </footer>
   );
 }
+
+// Hostinger deployment source marker.

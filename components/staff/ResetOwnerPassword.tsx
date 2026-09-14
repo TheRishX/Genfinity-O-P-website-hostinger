@@ -116,3 +116,5 @@ export function ResetOwnerPassword({ token }: { token: string }) {
     </div>
   );
 }
+
+// Hostinger deployment source marker.

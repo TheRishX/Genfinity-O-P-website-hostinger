@@ -6,3 +6,5 @@ export function MarkdownContent({ html }: { html: string }) {
     />
   );
 }
+
+// Hostinger deployment source marker.

@@ -41,3 +41,5 @@ export function SkeletonImage({
     </div>
   );
 }
+
+// Hostinger deployment source marker.

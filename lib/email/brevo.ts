@@ -49,3 +49,5 @@ export async function sendBrevoEmail(message: BrevoMessage) {
     ...(message.html ? { html: message.html } : {}),
   });
 }
+
+// Hostinger deployment source marker.

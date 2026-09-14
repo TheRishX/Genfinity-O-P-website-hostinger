@@ -99,3 +99,5 @@ export function hashSecret(value: string) {
 export function consentHash(value: string) {
   return createHash("sha256").update(value).digest("hex");
 }
+
+// Hostinger deployment source marker.

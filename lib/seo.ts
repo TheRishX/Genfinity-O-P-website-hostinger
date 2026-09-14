@@ -61,3 +61,5 @@ export function pageMetadata(path: SeoPath): Metadata {
     },
   };
 }
+
+// Hostinger deployment source marker.

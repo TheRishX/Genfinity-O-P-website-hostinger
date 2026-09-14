@@ -292,3 +292,5 @@ export function Navbar() {
     </header>
   );
 }
+
+// Hostinger deployment source marker.

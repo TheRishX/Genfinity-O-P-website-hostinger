@@ -123,3 +123,5 @@ export function SignaturePad({ value, printedName, onChange }: Props) {
     </div>
   );
 }
+
+// Hostinger deployment source marker.
