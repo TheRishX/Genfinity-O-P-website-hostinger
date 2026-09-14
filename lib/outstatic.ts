@@ -5,7 +5,7 @@ import {
   getDocumentBySlug,
   getDocumentSlugs,
 } from "outstatic/server";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL } from "@/app/seo";
 
 const POST_FIELDS = [
   "title",
