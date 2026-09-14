@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import {
   ArrowUpRight,
   Award,
@@ -10,11 +11,10 @@ import {
   Microscope,
   Users,
 } from "lucide-react";
-import { SkeletonImage } from "@/components/SkeletonImage";
-import deepakImage from "@/assets/images/clinical/1.jpg";
-import blakeImage from "@/assets/images/clinical/2.jpg";
 const consultationImage = "/images/genfinity/orthotic-clinical-care.avif";
 const orthoticsImage = "/images/genfinity/prosthetic-community.avif";
+const deepakImage = "/images/genfinity/hero-mobility.webp";
+const blakeImage = "/images/genfinity/prosthetic-lifestyle.avif";
 
 export default function AboutPage() {
   const fadeIn = {
@@ -57,7 +57,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
               className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square bg-slate-100"
             >
-              <SkeletonImage
+              <Image
                 src={consultationImage}
                 alt="An orthotic specialist shaping a custom ankle-foot orthosis"
                 fill
@@ -174,9 +174,8 @@ export default function AboutPage() {
                 className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[.07] shadow-2xl shadow-black/20 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-brand-red/50 hover:bg-white/[.1]"
               >
                 <div className="relative aspect-[1.35/1] overflow-hidden bg-brand-blue">
-                  <SkeletonImage
+                <Image
                     src={member.image}
-                    fallbackSrc={member.fallback}
                     alt={`${member.name}, ${member.title}`}
                     fill
                     className="object-cover object-top transition duration-700 group-hover:scale-105"
@@ -222,7 +221,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative aspect-square overflow-hidden rounded-3xl bg-slate-100 shadow-2xl">
-              <SkeletonImage
+              <Image
                 src={orthoticsImage}
                 alt="A person with a prosthetic leg enjoying time outdoors with a loved one"
                 fill
