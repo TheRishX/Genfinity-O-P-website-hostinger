@@ -1,4 +1,5 @@
 'use client';
+// Kept as a regular tracked source module for Hostinger's deployment checkout.
 
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';

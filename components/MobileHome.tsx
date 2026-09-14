@@ -1,4 +1,5 @@
 "use client";
+// Kept as a regular tracked source module for Hostinger's deployment checkout.
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";

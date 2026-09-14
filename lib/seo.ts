@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// Kept as a regular tracked source module for Hostinger's deployment checkout.
 
 export const SITE_URL = "https://genfinityoandp.com";
 export const SITE_NAME = "Genfinity O&P";
