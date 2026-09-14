@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "test:intake-pdf": "tsx scripts/generate-sample-intake-pdf.ts /tmp/genfinity-sample-intake.pdf",
