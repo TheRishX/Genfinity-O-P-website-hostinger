@@ -17,7 +17,6 @@ const nextConfig = {
   turbopack: {},
   async redirects() {
     return [
-      { source: "/", destination: "/orthotics-prosthetics/", permanent: true },
       { source: "/contacts-us/", destination: "/contact", permanent: true },
       { source: "/our-services/", destination: "/services", permanent: true },
     ];

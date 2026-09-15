@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   description:
     "Get expert orthotics and prosthetics care in the USA, with personalized solutions, advanced technology, and support for better mobility and comfort.",
-  alternates: { canonical: "/orthotics-prosthetics/" },
+  alternates: { canonical: "/" },
   applicationName: "Genfinity O&P",
   authors: [{ name: "Genfinity O&P", url: SITE_URL }],
   creator: "Genfinity O&P",
