@@ -1,3 +1,4 @@
+// Production deployment source module.
 export type Json =
   | string
   | number

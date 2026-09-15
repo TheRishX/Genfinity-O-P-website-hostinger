@@ -1,3 +1,4 @@
+// Production deployment source module.
 import type { Metadata } from "next";
 // Kept as a regular tracked source module for Hostinger's deployment checkout.
 

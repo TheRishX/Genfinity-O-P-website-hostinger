@@ -1,3 +1,4 @@
+// Production deployment source module.
 export const INTAKE_PACKET_VERSION = "2026-06-08";
 
 export const CONSENTS = {
