@@ -1,11 +1,11 @@
 import { createHash, randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { sendBrevoEmail } from "@/app/lib/email/brevo";
-import { createDatabaseClient } from "@/app/lib/mysql/client";
+import { sendBrevoEmail } from "@/app/shared/email/brevo";
+import { createDatabaseClient } from "@/app/shared/mysql/client";
 import {
   rateLimit,
   requireSameOrigin,
-} from "@/app/lib/intake/security";
+} from "@/app/shared/intake/security";
 
 export const runtime = "nodejs";
 

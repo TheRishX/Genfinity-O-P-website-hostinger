@@ -1,8 +1,8 @@
 // Production deployment source module.
 // Required production source file; kept in the deployment commit.
 import "server-only";
-import { createDatabaseClient, privateStorage } from "@/app/lib/mysql/client";
-export { isDatabaseConfigured } from "@/app/lib/mysql/client";
+import { createDatabaseClient, privateStorage } from "@/app/shared/mysql/client";
+export { isDatabaseConfigured } from "@/app/shared/mysql/client";
 
 export const storage = {
   from(_bucket?: string) {

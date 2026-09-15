@@ -1,5 +1,5 @@
 // Production deployment source module.
-import { createServerDatabase, privateStorage } from "@/app/lib/mysql/client";
+import { createServerDatabase, privateStorage } from "@/app/shared/mysql/client";
 
 export function createServerDatabaseWithStorage() {
   return {

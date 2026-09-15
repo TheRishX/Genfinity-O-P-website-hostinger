@@ -4,7 +4,7 @@ import "server-only";
 import { createHash, createHmac, randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import { cookies } from "next/headers";
-import { createDatabaseClient } from "@/app/lib/mysql/client";
+import { createDatabaseClient } from "@/app/shared/mysql/client";
 
 const scrypt = promisify(scryptCallback);
 const SESSION_COOKIE = "genfinity_staff_session";

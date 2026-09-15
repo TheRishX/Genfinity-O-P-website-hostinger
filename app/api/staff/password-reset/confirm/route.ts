@@ -1,11 +1,11 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createDatabaseClient } from "@/app/lib/mysql/client";
-import { hashPassword } from "@/app/lib/auth";
+import { createDatabaseClient } from "@/app/shared/mysql/client";
+import { hashPassword } from "@/app/shared/auth";
 import {
   rateLimit,
   requireSameOrigin,
-} from "@/app/lib/intake/security";
+} from "@/app/shared/intake/security";
 
 export const runtime = "nodejs";
 

@@ -13,7 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
-import { reportBookYourAppointmentConversion } from "@/app/lib/google-ads";
+import { reportBookYourAppointmentConversion } from "@/app/shared/google-ads";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);

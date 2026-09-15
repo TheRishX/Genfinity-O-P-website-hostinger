@@ -7,10 +7,10 @@ import {
   decryptJson,
   encryptJson,
   normalizeSearch,
-} from "@/app/lib/intake/crypto";
-import { defaultIntakeData, type IntakeData } from "@/app/lib/intake/schema";
-import { requireOwner, requireSameOrigin } from "@/app/lib/intake/security";
-import { createServerDatabaseWithStorage as createServerSupabase } from "@/app/lib/mysql/server";
+} from "@/app/shared/intake/crypto";
+import { defaultIntakeData, type IntakeData } from "@/app/shared/intake/schema";
+import { requireOwner, requireSameOrigin } from "@/app/shared/intake/security";
+import { createServerDatabaseWithStorage as createServerSupabase } from "@/app/shared/mysql/server";
 
 export const runtime = "nodejs";
 

@@ -1,7 +1,7 @@
 // Production deployment source module.
 import "server-only";
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentOwner } from "@/app/lib/auth";
+import { getCurrentOwner } from "@/app/shared/auth";
 
 const hits = new Map<string, { count: number; resetAt: number }>();
 

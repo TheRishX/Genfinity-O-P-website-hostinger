@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isBrevoConfigured, sendBrevoEmail } from "@/app/lib/email/brevo";
+import { isBrevoConfigured, sendBrevoEmail } from "@/app/shared/email/brevo";
 
 export const runtime = "nodejs";
 

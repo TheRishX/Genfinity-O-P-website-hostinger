@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
-import { buildIntakePdf } from "../app/lib/intake/pdf";
-import { defaultIntakeData } from "../app/lib/intake/schema";
+import { buildIntakePdf } from "../app/shared/intake/pdf";
+import { defaultIntakeData } from "../app/shared/intake/schema";
 
 async function main() {
   const data = structuredClone(defaultIntakeData);
