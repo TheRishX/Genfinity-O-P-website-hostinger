@@ -1,3 +1,4 @@
+// Required production source file; kept in the deployment commit.
 import "server-only";
 import { createDatabaseClient, privateStorage } from "@/lib/mysql/client";
 export { isDatabaseConfigured } from "@/lib/mysql/client";

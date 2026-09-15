@@ -1,3 +1,4 @@
+// Required production source file; kept in the deployment commit.
 import { z } from "zod";
 
 const text = (max = 300) => z.string().trim().max(max).default("");
