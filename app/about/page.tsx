@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
+import deepakPortrait from "../../assets/images/dp.jpg";
 import {
   ArrowUpRight,
   Award,
@@ -13,7 +14,7 @@ import {
 } from "lucide-react";
 const consultationImage = "/images/genfinity/orthotic-clinical-care.avif";
 const orthoticsImage = "/images/genfinity/prosthetic-community.avif";
-const deepakImage = "/images/genfinity/hero-mobility.webp";
+const deepakImage = deepakPortrait;
 const blakeImage = "/images/genfinity/prosthetic-lifestyle.avif";
 
 export default function AboutPage() {

@@ -1,5 +1,3 @@
-import { withOutstatic } from "outstatic/next-plugin";
-
 const nextConfig = {
   reactStrictMode: true,
   typescript: {
@@ -12,6 +10,7 @@ const nextConfig = {
       { protocol: "https", hostname: "i.pravatar.cc", port: "", pathname: "/**" },
       { protocol: "https", hostname: "raw.githubusercontent.com", port: "", pathname: "/**" },
       { protocol: "https", hostname: "avatars.githubusercontent.com", port: "", pathname: "/**" },
+      { protocol: "https", hostname: "blog.genfinityoandp.com", port: "", pathname: "/**" },
     ],
   },
   transpilePackages: ["motion"],
@@ -52,4 +51,4 @@ const nextConfig = {
   },
 };
 
-export default withOutstatic(nextConfig);
+export default nextConfig;

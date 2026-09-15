@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL, seoPages } from "@/app/seo";
-import { getAllPostSlugs } from "@/lib/outstatic";
+import { getAllPostSlugs } from "@/lib/wordpress";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = seoPages.map((page) => ({

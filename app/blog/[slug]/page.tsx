@@ -15,10 +15,8 @@ import {
   getPostBySlug,
   getPosts,
   getReadingTime,
-} from "@/lib/outstatic";
+} from "@/lib/wordpress";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from "@/app/seo";
-import { remark } from "remark";
-import remarkHtml from "remark-html";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -113,7 +111,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const title = getPlainTitle(post);
   const featured = getFeaturedImage(post);
   const categories = getCategories(post);
-  const contentHtml = await remark().use(remarkHtml).process(post.content);
+  const contentHtml = post.content;
   let relatedPosts: Awaited<ReturnType<typeof getPosts>>["posts"] = [];
   try {
     relatedPosts = (await getPosts(1, 4)).posts.filter((item) => item.id !== post.id).slice(0, 3);
@@ -156,7 +154,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         )}
 
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,760px)_260px] lg:px-8 lg:py-16">
-          <MarkdownContent html={String(contentHtml)} />
+          <MarkdownContent html={contentHtml} />
           <aside className="h-fit lg:sticky lg:top-32">
             <div className="rounded-3xl bg-brand-ink p-6 text-white shadow-xl">
               <p className="text-xs font-bold uppercase tracking-[.18em] text-red-300">Need a clearer answer?</p>

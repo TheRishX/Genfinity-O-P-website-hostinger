@@ -11,15 +11,12 @@ import {
   getPlainTitle,
   getPosts,
   getReadingTime,
-} from "@/lib/outstatic";
+} from "@/lib/wordpress";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/app/seo";
 
 const PAGE_SIZE = 9;
 
-// Outstatic content is committed to GitHub and included during the Hostinger build.
-// Keeping the index static avoids reading the local content database per request
-// the local content database after deployment.
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 const blogDescription =
   "Practical guidance about orthotics, prosthetics, foot pain, mobility, device care, and preparing for treatment from Genfinity O&P.";

@@ -22,6 +22,7 @@ import {
   type IntakeData,
 } from "@/lib/intake/schema";
 import { SignaturePad } from "./SignaturePad";
+import { reportBookYourAppointmentConversion } from "@/lib/google-ads";
 
 const steps = [
   "About you",
@@ -614,6 +615,7 @@ export function PatientIntakeForm() {
       submittedRef.current = true;
       clearLocalDraft();
       setReference(result.reference);
+      reportBookYourAppointmentConversion();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       setErrors({

@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
+import { reportBookYourAppointmentConversion } from "@/lib/google-ads";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -34,6 +35,7 @@ export default function ContactPage() {
       if (!response.ok) throw new Error(result.error || "We could not send your message.");
       form.reset();
       setSent(true);
+      reportBookYourAppointmentConversion();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "We could not send your message. Please call us instead.");
     } finally {
