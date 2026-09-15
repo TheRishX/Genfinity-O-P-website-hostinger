@@ -12,7 +12,6 @@ import {
   Send,
   CheckCircle2,
 } from "lucide-react";
-import Link from "next/link";
 import { reportBookYourAppointmentConversion } from "@/app/shared/google-ads";
 
 export default function ContactPage() {
@@ -94,12 +93,12 @@ export default function ContactPage() {
               </p>
             </div>
           </div>
-          <Link
-            href="/patient-intake"
+          <a
+            href="https://clinic.genfinityoandp.com/intake"
             className="relative mt-6 inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand-red px-6 py-3.5 font-bold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-brand-red-dark lg:mt-0"
           >
             Register as a new patient <ArrowRight className="h-4 w-4" />
-          </Link>
+          </a>
         </motion.div>
       </section>
 
