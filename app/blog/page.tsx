@@ -74,17 +74,17 @@ export default async function BlogPage() {
 
   return (
     <main className="bg-slate-50">
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+      <section className="relative overflow-hidden border-b border-slate-200 bg-white py-9 sm:py-12 lg:py-14">
         <div className="hero-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-red/15 bg-red-50 px-4 py-2 text-sm font-bold text-brand-red">
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-red/15 bg-red-50 px-3 py-1.5 text-sm font-bold text-brand-red">
               <BookOpen className="h-4 w-4" /> Genfinity Learning Center
             </div>
-            <h1 className="mt-6 text-4xl font-bold leading-tight text-brand-ink sm:text-5xl lg:text-6xl">
+            <h1 className="mt-3 text-3xl font-bold leading-tight text-brand-ink sm:text-4xl lg:text-5xl">
               Clear answers for your next step.
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
               Useful guidance about foot pain, orthotics, prosthetics, mobility, and what to expect from care—written to make complex decisions feel simpler.
             </p>
           </div>
