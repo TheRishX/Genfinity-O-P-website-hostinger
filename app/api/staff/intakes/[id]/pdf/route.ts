@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decryptJson } from "@/lib/intake/crypto";
-import { buildIntakePdf } from "@/lib/intake/pdf";
-import type { IntakeData } from "@/lib/intake/schema";
-import { requireOwner } from "@/lib/intake/security";
-import { createServerDatabaseWithStorage as createServerSupabase } from "@/lib/mysql/server";
+import { decryptJson } from "@/app/lib/intake/crypto";
+import { buildIntakePdf } from "@/app/lib/intake/pdf";
+import type { IntakeData } from "@/app/lib/intake/schema";
+import { requireOwner } from "@/app/lib/intake/security";
+import { createServerDatabaseWithStorage as createServerSupabase } from "@/app/lib/mysql/server";
 
 export const runtime = "nodejs";
 

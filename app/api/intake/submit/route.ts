@@ -1,21 +1,21 @@
 import { createHash, randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { sendBrevoEmail } from "@/lib/email/brevo";
-import { createAdminClient, isDatabaseConfigured } from "@/lib/mysql/admin";
+import { sendBrevoEmail } from "@/app/lib/email/brevo";
+import { createAdminClient, isDatabaseConfigured } from "@/app/lib/mysql/admin";
 import {
   blindToken,
   buildSearchTokens,
   consentHash,
   encryptJson,
   hashSecret,
-} from "@/lib/intake/crypto";
-import { CONSENTS, INTAKE_PACKET_VERSION } from "@/lib/intake/consents";
-import { intakeSchema } from "@/lib/intake/schema";
+} from "@/app/lib/intake/crypto";
+import { CONSENTS, INTAKE_PACKET_VERSION } from "@/app/lib/intake/consents";
+import { intakeSchema } from "@/app/lib/intake/schema";
 import {
   intakeLiveReady,
   rateLimit,
   requireSameOrigin,
-} from "@/lib/intake/security";
+} from "@/app/lib/intake/security";
 
 export const runtime = "nodejs";
 

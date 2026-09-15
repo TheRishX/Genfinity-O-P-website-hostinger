@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { sendBrevoEmail, isBrevoConfigured } from "@/lib/email/brevo";
-import { decryptJson, encryptJson } from "@/lib/intake/crypto";
-import type { IntakeData } from "@/lib/intake/schema";
-import { requireOwner, requireSameOrigin } from "@/lib/intake/security";
-import { createServerDatabase as createServerSupabase } from "@/lib/mysql/client";
+import { sendBrevoEmail, isBrevoConfigured } from "@/app/lib/email/brevo";
+import { decryptJson, encryptJson } from "@/app/lib/intake/crypto";
+import type { IntakeData } from "@/app/lib/intake/schema";
+import { requireOwner, requireSameOrigin } from "@/app/lib/intake/security";
+import { createServerDatabase as createServerSupabase } from "@/app/lib/mysql/client";
 
 export const runtime = "nodejs";
 

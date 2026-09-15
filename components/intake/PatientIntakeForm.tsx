@@ -14,15 +14,15 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { CONSENTS } from "@/lib/intake/consents";
+import { CONSENTS } from "@/app/lib/intake/consents";
 import {
   defaultIntakeData,
   intakeSchema,
   stepSchemas,
   type IntakeData,
-} from "@/lib/intake/schema";
+} from "@/app/lib/intake/schema";
 import { SignaturePad } from "./SignaturePad";
-import { reportBookYourAppointmentConversion } from "@/lib/google-ads";
+import { reportBookYourAppointmentConversion } from "@/app/lib/google-ads";
 
 const steps = [
   "About you",

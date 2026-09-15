@@ -1,13 +1,13 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isDatabaseConfigured } from "@/lib/mysql/admin";
-import { decryptJson, encryptJson, hashSecret } from "@/lib/intake/crypto";
-import { defaultIntakeData, type IntakeData } from "@/lib/intake/schema";
+import { createAdminClient, isDatabaseConfigured } from "@/app/lib/mysql/admin";
+import { decryptJson, encryptJson, hashSecret } from "@/app/lib/intake/crypto";
+import { defaultIntakeData, type IntakeData } from "@/app/lib/intake/schema";
 import {
   intakeLiveReady,
   rateLimit,
   requireSameOrigin,
-} from "@/lib/intake/security";
+} from "@/app/lib/intake/security";
 
 export const runtime = "nodejs";
 

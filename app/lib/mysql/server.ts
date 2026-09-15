@@ -1,4 +1,4 @@
-import { createServerDatabase, privateStorage } from "@/lib/mysql/client";
+import { createServerDatabase, privateStorage } from "@/app/lib/mysql/client";
 
 export function createServerDatabaseWithStorage() {
   return {

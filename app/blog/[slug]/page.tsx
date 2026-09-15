@@ -15,7 +15,7 @@ import {
   getPostBySlug,
   getPosts,
   getReadingTime,
-} from "@/lib/wordpress";
+} from "@/app/lib/wordpress";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from "@/app/seo";
 
 export const revalidate = 3600;

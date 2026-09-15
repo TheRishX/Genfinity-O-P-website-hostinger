@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createDatabaseClient, isDatabaseConfigured } from "@/lib/mysql/client";
-import { createSession, verifyPassword } from "@/lib/auth";
-import { requireSameOrigin, rateLimit } from "@/lib/intake/security";
+import { createDatabaseClient, isDatabaseConfigured } from "@/app/lib/mysql/client";
+import { createSession, verifyPassword } from "@/app/lib/auth";
+import { requireSameOrigin, rateLimit } from "@/app/lib/intake/security";
 
 export const runtime = "nodejs";
 
