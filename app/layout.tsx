@@ -67,6 +67,9 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: "sXaV3JYWUHWqHiBDpvj3xySBZgIPVl73dWN_Ea3lLJc",
+  },
 };
 
 const clinicStructuredData = {
