@@ -11,6 +11,7 @@ import {
   getPlainTitle,
   getPosts,
   getReadingTime,
+  WordPressPageOutOfRangeError,
 } from "@/app/shared/wordpress";
 import { DEFAULT_SOCIAL_IMAGE, SITE_NAME, SITE_URL } from "@/app/seo";
 
@@ -21,9 +22,21 @@ export const revalidate = 3600;
 const blogDescription =
   "Practical guidance about orthotics, prosthetics, foot pain, mobility, device care, and preparing for treatment from Genfinity O&P.";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const suffix = "";
-  const canonical = `${SITE_URL}/blog`;
+type BlogPageProps = {
+  searchParams: Promise<{ page?: string | string[] }>;
+};
+
+function getPageNumber(value: string | string[] | undefined) {
+  if (typeof value !== "string" || !/^[1-9]\d*$/.test(value)) return 1;
+
+  const page = Number(value);
+  return Number.isSafeInteger(page) ? page : 1;
+}
+
+export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
+  const page = getPageNumber((await searchParams).page);
+  const suffix = page > 1 ? ` — Page ${page}` : "";
+  const canonical = `${SITE_URL}${pageHref(page)}`;
   return {
     title: `Orthotics & Prosthetics Blog${suffix}`,
     description: blogDescription,
@@ -52,13 +65,14 @@ function pageHref(page: number) {
   return page <= 1 ? "/blog" : `/blog?page=${page}`;
 }
 
-export default async function BlogPage() {
-  const page = 1;
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const page = getPageNumber((await searchParams).page);
 
   let result;
   try {
     result = await getPosts(page, PAGE_SIZE);
-  } catch {
+  } catch (error) {
+    if (error instanceof WordPressPageOutOfRangeError) notFound();
     return (
       <main className="bg-slate-50 px-4 py-24 text-center sm:px-6">
         <BookOpen className="mx-auto h-12 w-12 text-brand-red" />

@@ -55,6 +55,17 @@ type WordPressPost = {
   };
 };
 
+type WordPressError = {
+  code?: string;
+};
+
+export class WordPressPageOutOfRangeError extends Error {
+  constructor() {
+    super("The requested WordPress post page does not exist");
+    this.name = "WordPressPageOutOfRangeError";
+  }
+}
+
 function stripHtml(value = "") {
   return value
     .replace(/<[^>]*>/g, " ")
@@ -104,7 +115,15 @@ async function fetchPosts(query: Record<string, string>) {
   url.searchParams.set("status", "publish");
   Object.entries(query).forEach(([key, value]) => url.searchParams.set(key, value));
   const response = await fetch(url, { next: { revalidate: 3600 } });
-  if (!response.ok) throw new Error(`WordPress posts request failed (${response.status})`);
+  if (!response.ok) {
+    if (response.status === 400) {
+      const error = await response.json().catch(() => null) as WordPressError | null;
+      if (error?.code === "rest_post_invalid_page_number") {
+        throw new WordPressPageOutOfRangeError();
+      }
+    }
+    throw new Error(`WordPress posts request failed (${response.status})`);
+  }
   return {
     posts: (await response.json() as WordPressPost[]).map(normalizePost),
     total: Number(response.headers.get("X-WP-Total") || 0),
