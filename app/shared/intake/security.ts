@@ -2,6 +2,7 @@
 import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentOwner } from "@/app/shared/auth";
+import { SITE_URL } from "@/app/shared/seo";
 
 const hits = new Map<string, { count: number; resetAt: number }>();
 
@@ -20,10 +21,35 @@ export function intakeLiveReady() {
   );
 }
 
+// Behind Hostinger's proxy, request.nextUrl is the internal address, so compare the
+// browser's Origin host with the host the request was actually sent to.
 export function requireSameOrigin(request: NextRequest) {
   const origin = request.headers.get("origin");
   if (!origin) return true;
-  return origin === request.nextUrl.origin || origin === process.env.APP_URL;
+  let originHost: string;
+  try {
+    originHost = new URL(origin).host.toLowerCase();
+  } catch {
+    return false;
+  }
+  const allowed = new Set<string>();
+  const addHosts = (value: string | null | undefined) => {
+    for (const part of (value || "").split(",")) if (part.trim()) allowed.add(part.trim().toLowerCase());
+  };
+  const addUrl = (value: string | undefined) => {
+    try {
+      if (value) allowed.add(new URL(value).host.toLowerCase());
+    } catch {
+      /* ignore malformed APP_URL */
+    }
+  };
+  addHosts(request.headers.get("x-forwarded-host"));
+  addHosts(request.headers.get("host"));
+  addHosts(request.nextUrl.host);
+  addUrl(process.env.APP_URL);
+  addUrl(SITE_URL);
+  addUrl(SITE_URL.replace("://", "://www."));
+  return allowed.has(originHost);
 }
 
 export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
