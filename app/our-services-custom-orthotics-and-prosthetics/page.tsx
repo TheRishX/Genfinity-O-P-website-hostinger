@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import ServicesPage from "@/app/services/page";
 import { pageMetadata } from "@/app/seo";
 
-export const metadata: Metadata = pageMetadata(
-  "/our-services-custom-orthotics-and-prosthetics/",
-);
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("/our-services-custom-orthotics-and-prosthetics/");
 
 export default ServicesPage;

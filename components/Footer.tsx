@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail, Clock, ArrowRight } from "lucide-react";
+import { CookiePreferencesLink } from "@/components/marketing/CookiePreferencesLink";
 
 export function Footer() {
   return (
@@ -186,6 +187,7 @@ export function Footer() {
             <Link href="/faqs" className="hover:text-white transition-colors">
               FAQs
             </Link>
+            <CookiePreferencesLink className="hover:text-white transition-colors" />
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { motion } from "motion/react";
 import {
   MapPin,
@@ -12,12 +12,18 @@ import {
   Send,
   CheckCircle2,
 } from "lucide-react";
-import { reportBookYourAppointmentConversion } from "@/app/shared/google-ads";
+import { newLeadId, pushEvent, trackLead } from "@/app/shared/tracking";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const started = useRef(false);
+  const markStarted = () => {
+    if (started.current) return;
+    started.current = true;
+    pushEvent("begin_consultation", { form_name: "consultation_request" });
+  };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,7 +40,7 @@ export default function ContactPage() {
       if (!response.ok) throw new Error(result.error || "We could not send your message.");
       form.reset();
       setSent(true);
-      reportBookYourAppointmentConversion();
+      trackLead({ leadId: newLeadId(), formName: "consultation_request" });
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "We could not send your message. Please call us instead.");
     } finally {
@@ -122,7 +128,7 @@ export default function ContactPage() {
                     <p className="mt-3 max-w-md text-slate-600">A Genfinity team member will contact you soon. For immediate scheduling help, call (888) 552-6188.</p>
                   </div>
                 ) : (
-                  <form onSubmit={submit} className="space-y-5">
+                  <form onSubmit={submit} onFocusCapture={markStarted} className="space-y-5">
                     <div>
                       <p className="text-xs font-bold uppercase tracking-[.18em] text-brand-red">Questions or appointment help</p>
                       <h2 className="mt-2 text-3xl font-bold text-brand-ink">Send us a message.</h2>

@@ -36,29 +36,43 @@ export const seoPages = [
 
 export type SeoPath = (typeof seoPages)[number]["path"];
 
-export function pageMetadata(path: SeoPath): Metadata {
+/** Page metadata from the registry, with any overrides saved in the /seo admin portal. */
+export async function pageMetadata(path: SeoPath, fallback: { title?: string } = {}): Promise<Metadata> {
   const page = seoPages.find((item) => item.path === path)!;
-  const url = new URL(path, SITE_URL).toString();
+  const { getSettings } = await import("@/app/shared/site-settings/store");
+  const { seo } = await getSettings();
+  const { pageKey } = await import("@/app/shared/site-settings/schema");
+  const override = seo.pages[pageKey(path)];
+  const base = seo.canonicalBase || SITE_URL;
+  const siteName = seo.ogSiteName || SITE_NAME;
+  const title = override?.title || fallback.title || page.title;
+  const description = override?.description || page.description;
+  const image = seo.ogImage || DEFAULT_SOCIAL_IMAGE;
+  const url = new URL(path, base).toString();
 
   return {
-    title: { absolute: page.title },
-    description: page.description,
+    title: { absolute: title },
+    description,
     keywords: "keyword" in page ? [page.keyword] : undefined,
     alternates: { canonical: path },
+    robots: override?.noindex ? { index: false, follow: true } : undefined,
     openGraph: {
       type: "website",
       locale: "en_US",
-      siteName: SITE_NAME,
+      siteName,
       url,
-      title: `${page.title} | ${SITE_NAME}`,
-      description: page.description,
-      images: [{ url: DEFAULT_SOCIAL_IMAGE, width: 2528, height: 1686, alt: "A Genfinity O&P patient moving confidently with a prosthetic leg" }],
+      title: `${title} | ${siteName}`,
+      description,
+      images: seo.ogImage
+        ? [{ url: image, width: 1200, height: 630, alt: siteName }]
+        : [{ url: image, width: 2528, height: 1686, alt: "A Genfinity O&P patient moving confidently with a prosthetic leg" }],
     },
     twitter: {
-      card: "summary_large_image",
-      title: `${page.title} | ${SITE_NAME}`,
-      description: page.description,
-      images: [DEFAULT_SOCIAL_IMAGE],
+      card: seo.twitterCard,
+      site: seo.twitterHandle || undefined,
+      title: `${title} | ${siteName}`,
+      description,
+      images: [image],
     },
   };
 }

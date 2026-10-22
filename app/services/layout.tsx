@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { pageMetadata } from "@/app/seo";
-export const metadata = pageMetadata("/services");
+export const generateMetadata = (): Promise<Metadata> => pageMetadata("/services");
 export default function Layout({ children }: { children: React.ReactNode }) { return children; }

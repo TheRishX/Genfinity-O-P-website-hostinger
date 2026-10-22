@@ -1,144 +1,106 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from "@/app/seo";
+import { buildLocalBusinessJsonLd } from "@/app/shared/site-settings/schema";
+import { getPublicSiteConfig, getSettings } from "@/app/shared/site-settings/store";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Best Orthotics & Prosthetics Center in the USA",
-    template: "%s | Genfinity O&P",
-  },
-  description:
-    "Get expert orthotics and prosthetics care in the USA, with personalized solutions, advanced technology, and support for better mobility and comfort.",
-  alternates: { canonical: "/" },
-  applicationName: "Genfinity O&P",
-  authors: [{ name: "Genfinity O&P", url: SITE_URL }],
-  creator: "Genfinity O&P",
-  publisher: "Genfinity O&P",
-  category: "healthcare",
-  referrer: "origin-when-cross-origin",
-  formatDetection: { email: false, address: false, telephone: false },
-  keywords: [
-    "orthotics and prosthetics",
-    "orthotics Tarzana",
-    "prosthetics Tarzana",
-    "custom foot orthotics Los Angeles",
-    "prosthetic clinic Tarzana",
-    "Genfinity O&P",
-  ],
-  openGraph: {
-    title: "Genfinity O&P | Move with more comfort and confidence",
-    description:
-      "25+ years of clinical experience, careful fitting, and patient-first orthotic and prosthetic care in Tarzana.",
-    type: "website",
-    locale: "en_US",
-    url: "/",
-    siteName: "Genfinity O&P",
-    images: [
-      {
-        url: DEFAULT_SOCIAL_IMAGE,
-        width: 2528,
-        height: 1686,
-        alt: "A person moving confidently with a prosthetic leg",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Genfinity O&P | Orthotics & Prosthetics in Tarzana, CA",
-    description:
-      "Personalized orthotic, prosthetic, and custom foot orthotic care in Tarzana, Los Angeles.",
-    images: [DEFAULT_SOCIAL_IMAGE],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-  verification: {
-    google: "sXaV3JYWUHWqHiBDpvj3xySBZgIPVl73dWN_Ea3lLJc",
-  },
-};
+// Re-check admin settings at least hourly; saving in /seo revalidates immediately.
+export const revalidate = 3600;
 
-const clinicStructuredData = {
-  "@context": "https://schema.org",
-  "@type": "MedicalBusiness",
-  "@id": `${SITE_URL}/#clinic`,
-  name: "Genfinity O&P",
-  legalName: "GENFINITY O&P LLC",
-  url: SITE_URL,
-  telephone: "+1-888-552-6188",
-  email: "support@genfinityoandp.com",
-  image: `${SITE_URL}${DEFAULT_SOCIAL_IMAGE}`,
-  logo: `${SITE_URL}/images/brand/genfinity-logo-uploaded.webp`,
-  description:
-    "Patient-first orthotic, prosthetic, and custom foot orthotic care in Tarzana, California.",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "18401 Burbank Blvd, Suite 215",
-    addressLocality: "Tarzana",
-    addressRegion: "CA",
-    postalCode: "91356",
-    addressCountry: "US",
-  },
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "10:00",
-      closes: "18:00",
-    },
-  ],
-  areaServed: ["Tarzana", "Los Angeles", "San Fernando Valley"],
-};
+const ROBOTS_MAP = {
+  "index, follow": { index: true, follow: true },
+  "noindex, follow": { index: false, follow: true },
+  "index, nofollow": { index: true, follow: false },
+  "noindex, nofollow": { index: false, follow: false },
+} as const;
 
-export default function RootLayout({
+// Site-wide defaults managed from the /seo admin portal.
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await getSettings();
+  const base = seo.canonicalBase || SITE_URL;
+  const siteName = seo.ogSiteName || "Genfinity O&P";
+  const robots = ROBOTS_MAP[seo.robots];
+  const image = seo.ogImage
+    ? { url: seo.ogImage, width: 1200, height: 630, alt: siteName }
+    : { url: DEFAULT_SOCIAL_IMAGE, width: 2528, height: 1686, alt: "A person moving confidently with a prosthetic leg" };
+  const keywords = seo.keywords.split(",").map((item) => item.trim()).filter(Boolean);
+
+  return {
+    metadataBase: new URL(base),
+    title: { default: seo.siteTitle, template: seo.titleTemplate || "%s" },
+    description: seo.metaDescription || undefined,
+    alternates: { canonical: "/" },
+    applicationName: siteName,
+    authors: [{ name: siteName, url: base }],
+    creator: siteName,
+    publisher: siteName,
+    category: "healthcare",
+    referrer: "origin-when-cross-origin",
+    formatDetection: { email: false, address: false, telephone: false },
+    keywords: keywords.length ? keywords : undefined,
+    openGraph: {
+      title: seo.ogTitle || seo.siteTitle,
+      description: seo.ogDescription || seo.metaDescription || undefined,
+      type: "website",
+      locale: "en_US",
+      url: "/",
+      siteName,
+      images: [image],
+    },
+    twitter: {
+      card: seo.twitterCard,
+      site: seo.twitterHandle || undefined,
+      title: seo.ogTitle || seo.siteTitle,
+      description: seo.ogDescription || seo.metaDescription || undefined,
+      images: [image.url],
+    },
+    robots: {
+      ...robots,
+      googleBot: { ...robots, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
+    verification: {
+      google: seo.gscVerification || undefined,
+      other: seo.bingVerification ? { "msvalidate.01": seo.bingVerification } : undefined,
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { seo } = await getSettings();
+  const base = seo.canonicalBase || SITE_URL;
+  const clinicStructuredData = buildLocalBusinessJsonLd(seo, seo.ogImage || `${base}${DEFAULT_SOCIAL_IMAGE}`);
+  const { tracking, cookieText } = await getPublicSiteConfig();
   return (
     <html
       lang="en"
       className={`${outfit.variable} ${inter.variable} scroll-smooth`}
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(clinicStructuredData).replace(/</g, "\\u003c"),
-          }}
-        />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-314681422"
-          strategy="afterInteractive"
-        />
-        <Script id="google-ads-tag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-314681422');
-          `}
-        </Script>
+        {clinicStructuredData && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(clinicStructuredData).replace(/</g, "\\u003c"),
+            }}
+          />
+        )}
       </head>
       <body
         className="font-inter bg-slate-50 text-slate-800 antialiased"
         suppressHydrationWarning
       >
-        <AppShell>{children}</AppShell>
+        <AppShell tracking={tracking} cookieText={cookieText}>
+          {children}
+        </AppShell>
       </body>
     </html>
   );
