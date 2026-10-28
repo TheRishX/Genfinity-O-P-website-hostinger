@@ -121,6 +121,9 @@ const careAction = z.discriminatedUnion("action", [
 type PatientProfile = IntakeData["demographics"];
 type DbClient = Awaited<ReturnType<typeof createServerSupabase>>;
 
+// Appointment times in patient emails are shown in the clinic's local time.
+const CLINIC_TIME_ZONE = process.env.CLINIC_TIME_ZONE || "America/Los_Angeles";
+
 function patientEmailConfigured() {
   return isBrevoConfigured() && process.env.CARE_EMAILS_ENABLED === "true";
 }
@@ -217,10 +220,10 @@ async function sendPatientMessage({
       ? humanize(orderResult.data.device_type)
       : "custom device",
     delivery_date: orderResult.data?.promised_date
-      ? new Date(`${orderResult.data.promised_date}T12:00:00`).toLocaleDateString()
+      ? new Date(orderResult.data.promised_date).toLocaleDateString("en-US", { timeZone: "UTC", dateStyle: "long" })
       : "to be confirmed",
     appointment_date: visitResult.data?.scheduled_at
-      ? new Date(visitResult.data.scheduled_at).toLocaleString()
+      ? new Date(visitResult.data.scheduled_at).toLocaleString("en-US", { timeZone: CLINIC_TIME_ZONE, dateStyle: "full", timeStyle: "short" })
       : "to be confirmed",
   };
   const renderedSubject = fillTemplate(subject, values);
@@ -500,6 +503,7 @@ export async function POST(request: NextRequest) {
           status: input.status,
           priority: input.priority,
           promised_date: input.promisedDate || null,
+          ordered_at: new Date().toISOString().slice(0, 10),
           delivered_at: input.status === "delivered" ? new Date().toISOString() : null,
           created_by: owner.id,
         })

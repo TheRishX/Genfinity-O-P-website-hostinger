@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isBrevoConfigured, sendBrevoEmail } from "@/app/shared/email/brevo";
+import { rateLimit, requireSameOrigin } from "@/app/shared/intake/security";
 
 export const runtime = "nodejs";
 
@@ -18,7 +19,12 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  if (!requireSameOrigin(request))
+    return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+  const limited = rateLimit(request, 5, 10 * 60_000);
+  if (limited) return limited;
+
   try {
     if (!isBrevoConfigured()) {
       console.error("Contact form email delivery is not configured.");

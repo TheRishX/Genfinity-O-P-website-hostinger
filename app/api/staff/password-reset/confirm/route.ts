@@ -35,14 +35,23 @@ export async function POST(request: NextRequest) {
 
   const admin = createDatabaseClient();
   const tokenHash = createHash("sha256").update(token).digest("hex");
-  const claimed = await admin
+  // Claim the token, then read it back by the claim time: the update's own filters
+  // (used_at IS NULL) no longer match once the row is claimed.
+  const claimedAt = new Date().toISOString();
+  const claim = await admin
     .from("owner_password_resets")
-    .update({ used_at: new Date().toISOString() })
+    .update({ used_at: claimedAt })
     .eq("token_hash", tokenHash)
     .is("used_at", null)
-    .gt("expires_at", new Date().toISOString())
-    .select("user_id")
-    .maybeSingle();
+    .gt("expires_at", claimedAt);
+  const claimed = claim.error
+    ? claim
+    : await admin
+        .from("owner_password_resets")
+        .select("user_id")
+        .eq("token_hash", tokenHash)
+        .eq("used_at", claimedAt)
+        .maybeSingle();
   if (claimed.error || !claimed.data)
     return NextResponse.json(
       { error: "This reset link is invalid or has expired." },

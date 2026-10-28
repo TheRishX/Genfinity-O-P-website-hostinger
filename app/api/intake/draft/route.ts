@@ -15,7 +15,8 @@ const cookieOptions = {
   httpOnly: true,
   sameSite: "lax" as const,
   secure: process.env.NODE_ENV === "production",
-  path: "/patient-intake",
+  // The browser only sends these cookies to the draft and submit API routes.
+  path: "/api/intake",
   maxAge: 60 * 60 * 24 * 7,
 };
 

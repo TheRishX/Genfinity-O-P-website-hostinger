@@ -52,6 +52,19 @@ export function requireSameOrigin(request: NextRequest) {
   return allowed.has(originHost);
 }
 
+// The public site origin for links in emails and tracking. Behind Hostinger's proxy
+// request.nextUrl.origin is the internal address (e.g. http://localhost:3000).
+export function publicOrigin(request?: NextRequest) {
+  try {
+    if (process.env.APP_URL) return new URL(process.env.APP_URL).origin;
+  } catch {
+    /* fall through to the forwarded host */
+  }
+  const forwarded = request?.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  if (forwarded && /^[a-z0-9.-]+(:\d+)?$/i.test(forwarded)) return `https://${forwarded}`;
+  return SITE_URL;
+}
+
 export function rateLimit(request: NextRequest, limit = 30, windowMs = 60_000) {
   const client =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
