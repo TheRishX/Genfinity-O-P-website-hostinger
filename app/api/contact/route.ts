@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isBrevoConfigured, sendBrevoEmail } from "@/app/shared/email/brevo";
 import { rateLimit, requireSameOrigin } from "@/app/shared/intake/security";
+import { isSmsConfigured, sendBrevoSms } from "@/app/shared/sms/brevo";
 
 export const runtime = "nodejs";
 
@@ -96,6 +97,19 @@ export async function POST(request: NextRequest) {
         </div>
       `,
     });
+
+    // A short confirmation text, only for people who ticked the SMS consent box.
+    if (smsConsent && isSmsConfigured()) {
+      try {
+        await sendBrevoSms({
+          to: phone,
+          content: `Genfinity O&P: Hi ${first}, we received your request and will contact you soon. Questions? Call (888) 552-6188.`,
+          tag: "contact-confirmation",
+        });
+      } catch (smsError) {
+        console.error("Contact confirmation SMS failed:", smsError);
+      }
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
