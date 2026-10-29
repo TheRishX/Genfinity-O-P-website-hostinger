@@ -18,8 +18,8 @@ const TABLES = new Set([
 ]);
 
 const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
+const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 const JSON_COLUMNS = new Set(["checklist", "changed_fields"]);
-const NO_ID_TABLES = new Set(["staff_profiles", "staff_users", "staff_sessions", "intake_search_tokens", "consent_records", "intake_submission_keys", "intake_signatures", "office_checklists", "email_templates", "staff_notification_settings", "owner_password_resets"]);
 let pool: Pool | undefined;
 
 function identifier(value: string) {
@@ -35,17 +35,39 @@ function tableName(value: string) {
 function valueFor(column: string, value: unknown) {
   if (value === undefined) return null;
   if (JSON_COLUMNS.has(column) && Array.isArray(value)) return JSON.stringify(value);
-  if (typeof value === "string" && value.includes("T") && value.endsWith("Z"))
+  if (typeof value === "string" && ISO_TIMESTAMP.test(value))
     return value.replace("T", " ").replace("Z", "");
   return value;
 }
 
-function prepareRow(table: string, input: Record<string, unknown>) {
+// Column names per table, read once from the live database so automatic id,
+// created_at and updated_at values are only sent to tables that need them.
+type TableColumns = { names: Set<string>; uuidId: boolean };
+const tableColumns = new Map<string, Promise<TableColumns>>();
+function columnsOf(table: string) {
+  let columns = tableColumns.get(table);
+  if (!columns) {
+    columns = getPool()
+      .query<RowDataPacket[]>(`SHOW COLUMNS FROM ${tableName(table)}`)
+      .then(([rows]) => {
+        const id = rows.find((row) => row.Field === "id");
+        return {
+          names: new Set(rows.map((row) => String(row.Field))),
+          uuidId: Boolean(id && /^char\(36\)/i.test(String(id.Type)) && !/auto_increment/i.test(String(id.Extra))),
+        };
+      });
+    columns.catch(() => tableColumns.delete(table));
+    tableColumns.set(table, columns);
+  }
+  return columns;
+}
+
+function prepareRow(table: string, input: Record<string, unknown>, columns: TableColumns) {
   const row = { ...input };
   const now = new Date().toISOString();
-  if (!NO_ID_TABLES.has(table) && row.id === undefined) row.id = randomUUID();
-  if (row.created_at === undefined && table !== "intake_search_tokens" && table !== "staff_profiles") row.created_at = now;
-  if (row.updated_at === undefined && ["patients", "intakes", "intake_drafts", "office_checklists", "patient_care_profiles", "patient_visits", "device_orders", "email_templates", "staff_notification_settings"].includes(table)) row.updated_at = now;
+  if (columns.uuidId && row.id === undefined) row.id = randomUUID();
+  if (row.created_at === undefined && columns.names.has("created_at")) row.created_at = now;
+  if (row.updated_at === undefined && columns.names.has("updated_at")) row.updated_at = now;
   if (row.changed_fields === undefined && ["intake_amendments", "intake_audit_events"].includes(table)) row.changed_fields = [];
   if (row.checklist === undefined && table === "office_checklists") row.checklist = {};
   if (row.clinician_notes === undefined && table === "office_checklists") row.clinician_notes = "";
@@ -79,6 +101,8 @@ export function getPool() {
       waitForConnections: true,
       connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || "10"),
       enableKeepAlive: true,
+      // Timestamps are written as UTC strings, so read them back as UTC too.
+      timezone: "Z",
       ssl: process.env.MYSQL_SSL === "true" ? {} : undefined,
     });
   }
@@ -116,11 +140,11 @@ class Query<T = any> implements PromiseLike<QueryResponse<T>> {
   update(payload: Record<string, unknown>) { this.mutation = "update"; this.payload = payload; return this; }
   upsert(payload: Record<string, unknown> | Record<string, unknown>[]) { this.mutation = "upsert"; this.payload = payload; return this; }
   delete() { this.mutation = "delete"; return this; }
-  single() { return this.execute().then((result) => { if (result.data.length !== 1) return { ...result, data: null, error: new Error("Expected exactly one row") }; return { ...result, data: result.data[0] }; }); }
+  single() { return this.execute().then((result) => { if (result.error) return { ...result, data: null }; if (result.data.length !== 1) return { ...result, data: null, error: new Error("Expected exactly one row") }; return { ...result, data: result.data[0] }; }); }
   maybeSingle() { return this.execute().then((result) => ({ ...result, data: result.data[0] || null })); }
   then<TResult1 = QueryResponse<T>, TResult2 = never>(onfulfilled?: ((value: QueryResponse<T>) => TResult1 | PromiseLike<TResult1>) | null, onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null) { return this.execute().then(onfulfilled, onrejected); }
 
-  private where(sql: string, values: unknown[]) { this.filters.push({ sql, values }); return this; }
+  private where(sql: string, values: unknown[]) { this.filters.push({ sql, values: values.map((value) => valueFor("", value)) }); return this; }
 
   private async execute(): Promise<QueryResponse<T>> {
     const where = this.filters.length ? ` WHERE ${this.filters.map((item) => item.sql).join(" AND ")}` : "";
@@ -135,11 +159,12 @@ class Query<T = any> implements PromiseLike<QueryResponse<T>> {
         const [rows] = await getPool().query<RowDataPacket[]>(`SELECT ${this.safeColumns()} FROM ${tableName(this.table)}${where}${this.sort}${limit}`, values);
         return { data: rows.map((row) => normalizeRow(row as Record<string, unknown>) as T), count: null, error: null };
       }
-      const rows = (Array.isArray(this.payload) ? this.payload : [this.payload || {}]).map((row) => prepareRow(this.table, row));
       if (this.mutation === "delete") {
         await getPool().execute<ResultSetHeader>(`DELETE FROM ${tableName(this.table)}${where}`, values as any[]);
         return { data: [], count: null, error: null };
       }
+      const tableCols = await columnsOf(this.table);
+      const rows = (Array.isArray(this.payload) ? this.payload : [this.payload || {}]).map((row) => prepareRow(this.table, row, tableCols));
       const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))];
       if (!columns.length) throw new Error("Mutation payload is empty");
       const names = columns.map(identifier).join(", ");

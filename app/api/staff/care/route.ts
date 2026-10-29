@@ -4,6 +4,7 @@ import { sendBrevoEmail, isBrevoConfigured } from "@/app/shared/email/brevo";
 import { decryptJson, encryptJson } from "@/app/shared/intake/crypto";
 import type { IntakeData } from "@/app/shared/intake/schema";
 import { requireOwner, requireSameOrigin } from "@/app/shared/intake/security";
+import { isSmsConfigured, sendBrevoSms } from "@/app/shared/sms/brevo";
 import { createServerDatabase as createServerSupabase } from "@/app/shared/mysql/client";
 
 export const runtime = "nodejs";
@@ -121,6 +122,9 @@ const careAction = z.discriminatedUnion("action", [
 type PatientProfile = IntakeData["demographics"];
 type DbClient = Awaited<ReturnType<typeof createServerSupabase>>;
 
+// Appointment times in patient emails are shown in the clinic's local time.
+const CLINIC_TIME_ZONE = process.env.CLINIC_TIME_ZONE || "America/Los_Angeles";
+
 function patientEmailConfigured() {
   return isBrevoConfigured() && process.env.CARE_EMAILS_ENABLED === "true";
 }
@@ -169,6 +173,39 @@ async function getTemplate(db: DbClient, id: string) {
   return data;
 }
 
+// Texts go only to patients who chose "Text message" as a contact method on their intake.
+async function patientAcceptsTexts(db: DbClient, patientId: string) {
+  const { data } = await db
+    .from("intakes")
+    .select("ciphertext,iv,auth_tag")
+    .eq("patient_id", patientId)
+    .order("submitted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data) return false;
+  const intake = decryptJson<IntakeData>({ ciphertext: data.ciphertext, iv: data.iv, tag: data.auth_tag });
+  return [...(intake.contacts?.contactPreferences || []), ...(intake.privacy?.communicationMethods || [])].includes("Text message");
+}
+
+// The text carries no care details; it points the patient to their email or a call.
+async function sendPatientText(db: DbClient, patientId: string, profile: PatientProfile, subject: string) {
+  if (!isSmsConfigured()) return { status: "skipped", reason: "SMS is not enabled" };
+  if (!profile.mobilePhone) return { status: "skipped", reason: "No mobile number" };
+  try {
+    if (!(await patientAcceptsTexts(db, patientId)))
+      return { status: "skipped", reason: "Patient did not choose text messages" };
+    await sendBrevoSms({
+      to: profile.mobilePhone,
+      content: `Genfinity O&P: Hi ${firstName(profile)}. ${subject.replace(/[.!]$/, "")}. ${profile.email ? "Please check your email or call" : "Please call"} (888) 552-6188.`,
+      tag: "patient-update",
+    });
+    return { status: "sent" };
+  } catch (error) {
+    console.error("Patient SMS failed:", error);
+    return { status: "failed", reason: error instanceof Error ? error.message.slice(0, 200) : "SMS failed" };
+  }
+}
+
 async function sendPatientMessage({
   db,
   ownerId,
@@ -206,9 +243,9 @@ async function sendPatientMessage({
       .limit(1)
       .maybeSingle(),
   ]);
-  if (!profile?.email) return { status: "skipped", reason: "No email address" };
+  if (!profile) return { status: "skipped", reason: "Patient not found" };
   if (automatic && careResult.data?.email_updates_enabled === false)
-    return { status: "skipped", reason: "Automatic email updates are off" };
+    return { status: "skipped", reason: "Automatic updates are off" };
 
   const values = {
     first_name: firstName(profile),
@@ -217,14 +254,16 @@ async function sendPatientMessage({
       ? humanize(orderResult.data.device_type)
       : "custom device",
     delivery_date: orderResult.data?.promised_date
-      ? new Date(`${orderResult.data.promised_date}T12:00:00`).toLocaleDateString()
+      ? new Date(orderResult.data.promised_date).toLocaleDateString("en-US", { timeZone: "UTC", dateStyle: "long" })
       : "to be confirmed",
     appointment_date: visitResult.data?.scheduled_at
-      ? new Date(visitResult.data.scheduled_at).toLocaleString()
+      ? new Date(visitResult.data.scheduled_at).toLocaleString("en-US", { timeZone: CLINIC_TIME_ZONE, dateStyle: "full", timeStyle: "short" })
       : "to be confirmed",
   };
   const renderedSubject = fillTemplate(subject, values);
   const renderedBody = fillTemplate(body, values);
+  const sms = await sendPatientText(db, patientId, profile, renderedSubject);
+  if (!profile.email) return { status: "skipped", reason: "No email address", sms };
   const encrypted = encryptJson({ to: profile.email, body: renderedBody });
   const inserted = await db
     .from("patient_messages")
@@ -254,14 +293,14 @@ async function sendPatientMessage({
       .from("patient_messages")
       .update({ delivery_status: "sent", sent_at: new Date().toISOString() })
       .eq("id", inserted.data.id);
-    return { status: "sent" };
+    return { status: "sent", sms };
   } catch (error) {
     const reason = error instanceof Error ? error.message.slice(0, 500) : "Delivery failed";
     await db
       .from("patient_messages")
       .update({ delivery_status: "failed", error_message: reason })
       .eq("id", inserted.data.id);
-    return { status: "failed", reason };
+    return { status: "failed", reason, sms };
   }
 }
 
@@ -500,6 +539,7 @@ export async function POST(request: NextRequest) {
           status: input.status,
           priority: input.priority,
           promised_date: input.promisedDate || null,
+          ordered_at: new Date().toISOString().slice(0, 10),
           delivered_at: input.status === "delivered" ? new Date().toISOString() : null,
           created_by: owner.id,
         })

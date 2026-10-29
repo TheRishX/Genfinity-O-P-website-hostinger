@@ -26,7 +26,7 @@ function referenceNumber() {
 async function sendReceipts(reference: string, patientEmail: string) {
   if (process.env.INTAKE_SEND_EMAILS !== "true") return;
   const portalUrl = `${process.env.APP_URL || "https://genfinityoandp.com"}/staff/intakes`;
-  await Promise.allSettled([
+  const results = await Promise.allSettled([
     sendBrevoEmail({
       to: process.env.CONTACT_TO_EMAIL || "support@genfinityoandp.com",
       subject: `New patient intake received - ${reference}`,
@@ -38,6 +38,9 @@ async function sendReceipts(reference: string, patientEmail: string) {
       text: `Your Genfinity O&P intake was received on ${new Date().toLocaleDateString("en-US")}. Reference: ${reference}. Please keep this reference. For questions, call (888) 552-6188. This email does not contain your intake answers.`,
     }),
   ]);
+  for (const result of results)
+    if (result.status === "rejected")
+      console.error("Intake receipt email failed:", result.reason);
 }
 
 export async function POST(request: NextRequest) {
@@ -230,10 +233,11 @@ export async function POST(request: NextRequest) {
       .eq("key_hash", keyHash);
 
     const response = NextResponse.json({ ok: true, reference });
-    response.cookies.delete("genfinity_intake_id");
-    response.cookies.delete("genfinity_intake_secret");
+    response.cookies.delete({ name: "genfinity_intake_id", path: "/api/intake" });
+    response.cookies.delete({ name: "genfinity_intake_secret", path: "/api/intake" });
     return response;
-  } catch {
+  } catch (error) {
+    console.error("Intake submission failed:", error);
     if (intakeId) await admin.from("intakes").delete().eq("id", intakeId);
     if (patientId) await admin.from("patients").delete().eq("id", patientId);
     await admin.storage.from("intake-signatures").remove([signaturePath]);

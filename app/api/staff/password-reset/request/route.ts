@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendBrevoEmail } from "@/app/shared/email/brevo";
 import { createDatabaseClient } from "@/app/shared/mysql/client";
 import {
+  publicOrigin,
   rateLimit,
   requireSameOrigin,
 } from "@/app/shared/intake/security";
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
   if (inserted.error)
     return NextResponse.json({ error: "Unable to start password recovery" }, { status: 500 });
 
-  const resetUrl = `${request.nextUrl.origin}/staff/reset-password?token=${encodeURIComponent(token)}`;
+  const resetUrl = `${publicOrigin(request)}/staff/reset-password?token=${encodeURIComponent(token)}`;
   try {
     await sendBrevoEmail({
       to: ownerEmail,
@@ -78,7 +79,8 @@ export async function POST(request: NextRequest) {
         "This single-use link expires in 20 minutes. If you did not request it, no action is needed.",
       ].join("\n"),
     });
-  } catch {
+  } catch (error) {
+    console.error("Password reset email failed:", error);
     await admin.from("owner_password_resets").delete().eq("token_hash", tokenHash);
     return NextResponse.json({ error: "Unable to send the recovery email" }, { status: 500 });
   }

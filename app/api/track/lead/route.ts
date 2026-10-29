@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSettings } from "@/app/shared/site-settings/store";
-import { rateLimit, requireSameOrigin } from "@/app/shared/intake/security";
+import { publicOrigin, rateLimit, requireSameOrigin } from "@/app/shared/intake/security";
 
 export const runtime = "nodejs";
 
@@ -83,10 +83,10 @@ export async function POST(request: NextRequest) {
 function safeSameSiteUrl(value: string, request: NextRequest) {
   try {
     const url = new URL(value);
-    if (url.host !== request.nextUrl.host) throw new Error("cross-site");
+    if (url.host !== new URL(publicOrigin(request)).host) throw new Error("cross-site");
     // Strip query strings so nothing typed into a form can leak through the URL.
     return `${url.origin}${url.pathname}`;
   } catch {
-    return `${request.nextUrl.origin}/contact`;
+    return `${publicOrigin(request)}/contact`;
   }
 }

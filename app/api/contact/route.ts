@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isBrevoConfigured, sendBrevoEmail } from "@/app/shared/email/brevo";
+import { rateLimit, requireSameOrigin } from "@/app/shared/intake/security";
+import { isSmsConfigured, sendBrevoSms } from "@/app/shared/sms/brevo";
 
 export const runtime = "nodejs";
 
@@ -18,7 +20,12 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  if (!requireSameOrigin(request))
+    return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+  const limited = rateLimit(request, 5, 10 * 60_000);
+  if (limited) return limited;
+
   try {
     if (!isBrevoConfigured()) {
       console.error("Contact form email delivery is not configured.");
@@ -90,6 +97,19 @@ export async function POST(request: Request) {
         </div>
       `,
     });
+
+    // A short confirmation text, only for people who ticked the SMS consent box.
+    if (smsConsent && isSmsConfigured()) {
+      try {
+        await sendBrevoSms({
+          to: phone,
+          content: `Genfinity O&P: Hi ${first}, we received your request and will contact you soon. Questions? Call (888) 552-6188.`,
+          tag: "contact-confirmation",
+        });
+      } catch (smsError) {
+        console.error("Contact confirmation SMS failed:", smsError);
+      }
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

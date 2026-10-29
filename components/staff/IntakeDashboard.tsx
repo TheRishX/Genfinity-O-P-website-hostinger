@@ -56,6 +56,13 @@ const control = "mt-2 min-h-12 w-full rounded-xl border border-slate-300 bg-whit
 
 function human(value: string) { return value.replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
 function day(value?: string | null) { return value ? new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Not set"; }
+// datetime-local inputs hold the staff member's wall-clock time with no zone; send it as UTC.
+function toIso(value: string) { return value ? new Date(value).toISOString() : null; }
+function toLocalInput(value?: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+}
 function dateTime(value?: string | null) { return value ? new Date(value).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "Not set"; }
 function due(value?: string | null) { const end = new Date(); end.setHours(23, 59, 59, 999); return Boolean(value && new Date(value) <= end); }
 function today(value?: string | null) { return Boolean(value && new Date(value).toDateString() === new Date().toDateString()); }
@@ -144,7 +151,7 @@ export function IntakeDashboard() {
     setSelectedId(id); setDetail(null); setView("patients"); setTab("overview"); setError("");
     try {
       const data = await json(await fetch(`/api/staff/intakes/${id}`, { cache: "no-store" })); setDetail(data);
-      setCare({ stage: data.care?.stage || "new", priority: data.care?.priority || "routine", nextAction: data.care?.next_action || "", nextActionAt: data.care?.next_action_at?.slice(0, 16) || "", emailUpdatesEnabled: data.care?.email_updates_enabled !== false });
+      setCare({ stage: data.care?.stage || "new", priority: data.care?.priority || "routine", nextAction: data.care?.next_action || "", nextActionAt: toLocalInput(data.care?.next_action_at), emailUpdatesEnabled: data.care?.email_updates_enabled !== false });
     } catch (caught) { setError(caught instanceof Error ? caught.message : "Unable to open the patient."); }
   }
   async function post(payload: unknown, success: string) {
@@ -192,14 +199,14 @@ export function IntakeDashboard() {
       {(error || notice) && <div role="status" className={`mb-5 flex items-start gap-3 rounded-2xl border p-4 text-sm font-semibold ${error ? "border-red-200 bg-red-50 text-red-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>{error ? <AlertCircle className="h-5 w-5 shrink-0" /> : <Check className="h-5 w-5 shrink-0" />}<span>{error || notice}</span><button type="button" aria-label="Dismiss message" onClick={() => { setError(""); setNotice(""); }} className="ml-auto"><X className="h-5 w-5" /></button></div>}
       {view === "today" && <Today attention={attention} visits={visitsToday} deliveries={deliveries} open={openPatient} all={() => setView("patients")} />}
       {view === "patients" && !selectedId && <PatientList records={filtered} query={query} stage={stage} setQuery={setQuery} setStage={setStage} open={openPatient} />}
-      {view === "patients" && selectedId && <Workspace detail={detail} tab={tab} setTab={setTab} care={care} setCare={setCare} saving={saving} back={() => { setSelectedId(""); setDetail(null); }} saveCare={() => post({ action: "profile.update", patientId, ...care }, "Care status saved.")} dialog={openDialog} updateVisit={(id, status) => post({ action: "visit.update", id, status }, "Visit updated.")} updateOrder={(id, status) => post({ action: "order.update", id, status }, "Device status updated.")} />}
+      {view === "patients" && selectedId && <Workspace detail={detail} tab={tab} setTab={setTab} care={care} setCare={setCare} saving={saving} back={() => { setSelectedId(""); setDetail(null); }} saveCare={() => post({ action: "profile.update", patientId, ...care, nextActionAt: toIso(care.nextActionAt) }, "Care status saved.")} dialog={openDialog} updateVisit={(id, status) => post({ action: "visit.update", id, status }, "Visit updated.")} updateOrder={(id, status) => post({ action: "order.update", id, status }, "Device status updated.")} />}
       {view === "messages" && (configLoading ? <InlineLoading label="Loading messages…" /> : <Messages records={filtered} templates={templates} recipients={recipients} setRecipients={setRecipients} query={query} setQuery={setQuery} form={message} setForm={setMessage} choose={chooseTemplate} configured={emailConfigured} settings={settings} setSettings={(next) => { setSettings(next); void post({ action: "settings.update", automaticUrgentUpdates: next.automatic_urgent_updates, automaticDeliveryUpdates: next.automatic_delivery_updates, appointmentReminders: next.appointment_reminders }, "Email settings saved."); }} send={() => post({ action: "email.send", patientIds: recipients, templateId: message.templateId || null, subject: message.subject, body: message.body }, "Email request completed.").then((result) => { if (result) setNotice(`${result.sent} sent · ${result.failed} failed · ${result.skipped} skipped`); })} saving={saving} />)}
       </div>
       <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-3 rounded-2xl border border-slate-200 bg-white/95 p-1.5 shadow-xl backdrop-blur lg:hidden" aria-label="Patient management">{navigation.map(([key, label, Icon]) => <button key={key} type="button" onClick={() => changeView(key)} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-bold ${view === key ? "bg-red-50 text-[#a71919]" : "text-slate-500"}`}><Icon className="h-[18px] w-[18px]" />{label}</button>)}</nav>
     </div>
     {dialog && <Modal title={dialog === "patient" ? "Add a patient" : dialog === "visit" ? "Add a visit" : dialog === "device" ? "Add a device" : "Email patient"} close={() => setDialog(null)}>
       {dialog === "patient" && <PatientForm form={patient} setForm={setPatient} save={createPatient} saving={saving} />}
-      {dialog === "visit" && detail && <VisitForm form={visit} setForm={setVisit} saving={saving} save={() => post({ action: "visit.create", patientId, intakeId: detail.intake.id, ...visit }, "Visit added.")} />}
+      {dialog === "visit" && detail && <VisitForm form={visit} setForm={setVisit} saving={saving} save={() => post({ action: "visit.create", patientId, intakeId: detail.intake.id, ...visit, scheduledAt: toIso(visit.scheduledAt) }, "Visit added.")} />}
       {dialog === "device" && detail && <DeviceForm form={device} setForm={setDevice} saving={saving} save={() => post({ action: "order.create", patientId, intakeId: detail.intake.id, ...device, promisedDate: device.promisedDate || null }, "Device added.")} />}
       {dialog === "email" && detail && <EmailForm templates={templates} form={message} setForm={setMessage} choose={chooseTemplate} configured={emailConfigured} saving={saving} save={() => post({ action: "email.send", patientIds: [patientId], templateId: message.templateId || null, subject: message.subject, body: message.body }, "Email request completed.")} />}
     </Modal>}
